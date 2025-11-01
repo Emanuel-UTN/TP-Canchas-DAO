@@ -1,0 +1,36 @@
+from apps.models.Cancha import Cancha
+from apps.models.Cliente import Cliente
+from apps.models.Reserva import Reserva
+from apps.models.Pago import Pago
+from apps.models.Torneo import Torneo
+
+class GestorReservas:
+    def __init__(self):
+        self.reservas = []
+        self.canchas = []
+        self.torneos = []
+        self.hora_abre = 8  # Hora de apertura (8 AM)
+        self.hora_cierra = 22  # Hora de cierre (10 PM)
+
+    def crear_reserva(self, cliente: Cliente, cancha: Cancha, fecha_hora_inicio, horas: int, pago: Pago):
+        nro_reserva = len(self.reservas) + 1
+        reserva = Reserva(nro_reserva, cliente, cancha, fecha_hora_inicio, horas, pago)
+        self.reservas.append(reserva)
+        return reserva
+
+    def crear_torneo(self, fecha_inicio, fecha_fin, costo_inscripcion: float, premio: float):
+        torneo = Torneo(fecha_inicio, fecha_fin, costo_inscripcion, premio)
+        self.torneos.append(torneo)
+        return torneo
+    
+    def agregar_cancha(self, cancha: Cancha):
+        self.canchas.append(cancha)
+
+    def obtener_reservas(self):
+        return self.reservas
+
+    def obtener_torneos(self):
+        return self.torneos
+    
+    def obtener_canchas(self):
+        return self.canchas
