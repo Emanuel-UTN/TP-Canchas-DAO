@@ -1,5 +1,5 @@
-import Equipo
-from apps.models.Cancha import Cancha
+from models.Torneo.Equipo import Equipo
+from models.Cancha.Cancha import Cancha
 
 class Partido:
     def __init__(self, equipo_1: Equipo, equipo_2: Equipo, fecha_hora: str, cancha: Cancha):

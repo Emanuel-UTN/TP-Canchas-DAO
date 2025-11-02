@@ -1,7 +1,7 @@
-from apps.models.Cancha import Cancha
-from apps.models.Cliente import Cliente
-from apps.models.Pago import Pago
-import EstadoReserva
+from models.Cancha.Cancha import Cancha
+from models.Cliente.Cliente import Cliente
+from models.Pago.Pago import Pago
+from models.Reserva.EstadoReserva import EstadoReserva
 
 class Reserva:
     def __init__(self, nro_reserva, cliente: Cliente, cancha: Cancha, fecha_hora_inicio, horas: int, pago: Pago):

@@ -1,5 +1,5 @@
-import TipoCancha
-import Servicio
+from models.Cancha.TipoCancha import TipoCancha
+from models.Cancha.Servicio import Servicio
 
 class Cancha:
     def __init__(self, nro_cancha : int, tipo_cancha : TipoCancha, costo_hora : float):
