@@ -1,5 +1,7 @@
 from dao.conexion import ConexionDB
 from models.Torneo.Partido import Partido
+from dao.CanchaDAO.CanchaDAO import CanchaDAO
+from dao.TorneoDAO.EquipoDAO import EquipoDAO
 
 class PartidoDAO:
     @staticmethod
@@ -58,15 +60,13 @@ class PartidoDAO:
         filas = cursor.fetchall()
         for fila in filas:
             partido = Partido(
-                id_partido=fila[0],
-                id_torneo=fila[1],
-                id_equipo1=fila[2],
-                id_equipo2=fila[3],
-                nro_cancha=fila[4],
-                goles_equipo1=fila[5],
-                goles_equipo2=fila[6],
+                equipo_1=EquipoDAO.obtener_equipo_por_id(fila[2]),
+                equipo_2=EquipoDAO.obtener_equipo_por_id(fila[3]),
+                cancha=CanchaDAO.obtener_cancha_por_numero(fila[4]),
                 fecha_hora=fila[7]
             )
+            partido.goles_1 = fila[5]
+            partido.goles_2 = fila[6]
             partidos.append(partido)
         cursor.close()
         return partidos

@@ -56,6 +56,22 @@ class ClienteDAO:
         return clientes
     
     @staticmethod
+    def obtener_cliente_por_dni(dni: int):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute('''SELECT dni, nombre, apellido, telefono FROM Cliente WHERE dni = ?''', (dni,))
+        fila = cursor.fetchone()
+        cursor.close()
+        if fila:
+            return Cliente(
+                dni=fila[0],
+                nombre=fila[1],
+                apellido=fila[2],
+                telefono=fila[3]
+            )
+        return None
+    
+    @staticmethod
     def modificar_cliente(cliente: Cliente):
         conexion = ConexionDB().obtener_conexion()
         cursor = conexion.cursor()

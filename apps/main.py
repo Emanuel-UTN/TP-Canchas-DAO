@@ -1,15 +1,15 @@
 from bd_canchas import crear_tablas
-from dao.ClienteDAO.ClienteDAO import ClienteDAO
-from models.Cliente.Cliente import Cliente
 from dao.conexion import ConexionDB
+from apps.models.Gestor import GestorReservas
+from apps.dao.CanchaDAO import CanchaDAO
+from apps.dao.ReservaDAO import ReservaDAO
+from apps.dao.TorneoDAO import TorneoDAO
 
 crear_tablas()
+gestor = GestorReservas()
 
-nuevo = Cliente(34443321, "Juan", "Angonese", "3511234567")
-ClienteDAO.agregar_cliente(nuevo)
-
-clientes = ClienteDAO.obtener_clientes()
-for c in clientes:
-    print(c)
+gestor.canchas.extend(CanchaDAO.obtener_canchas())
+gestor.reservas.extend(ReservaDAO.obtener_reservas())
+gestor.torneos.extend(TorneoDAO.obtener_torneos())
 
 ConexionDB().cerrar_conexion()

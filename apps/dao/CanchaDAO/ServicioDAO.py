@@ -47,13 +47,27 @@ class ServicioDAO:
         filas = cursor.fetchall()
         for fila in filas:
             servicio = Servicio(
-                id_servicio=fila[0],
                 servicio=fila[1],
                 costo=fila[2]
             )
             servicios.append(servicio)
         cursor.close()
         return servicios
+        
+    @staticmethod
+    def obtener_servicio_por_id(id_servicio: int):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute('''SELECT id_servicio, servicio, costo FROM Servicio WHERE id_servicio = ?''', (id_servicio,))
+        fila = cursor.fetchone()
+        servicio = None
+        if fila:
+            servicio = Servicio(
+                servicio=fila[1],
+                costo=fila[2]
+            )
+        cursor.close()
+        return servicio
 
     @staticmethod
     def modificar_servicio(servicio: Servicio):

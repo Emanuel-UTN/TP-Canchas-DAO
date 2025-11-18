@@ -45,12 +45,24 @@ class MetodoPagoDAO:
         filas = cursor.fetchall()
         for fila in filas:
             metodo_pago = MetodoPago(
-                id_metodo_pago=fila[0],
                 metodo=fila[1]
             )
             metodos_pago.append(metodo_pago)
         cursor.close()
         return metodos_pago
+
+    @staticmethod
+    def obtener_metodo_pago_por_id(id_metodo_pago: int):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute('''SELECT id_metodo_pago, metodo FROM MetodoPago WHERE id_metodo_pago = ?''', (id_metodo_pago,))
+        fila = cursor.fetchone()
+        cursor.close()
+        if fila:
+            return MetodoPago(
+                metodo=fila[1]
+            )
+        return None
 
     @staticmethod
     def modificar_metodo_pago(metodo_pago: MetodoPago):

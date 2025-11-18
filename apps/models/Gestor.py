@@ -5,6 +5,12 @@ from apps.models.Pago import Pago
 from apps.models.Torneo import Torneo
 
 class GestorReservas:
+    _instance = None
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self):
         self.reservas = []
         self.canchas = []

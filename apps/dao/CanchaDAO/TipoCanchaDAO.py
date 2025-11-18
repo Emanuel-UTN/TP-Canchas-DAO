@@ -45,12 +45,25 @@ class TipoCanchaDAO:
         filas = cursor.fetchall()
         for fila in filas:
             tipo_cancha = TipoCancha(
-                id_tipo=fila[0],
                 tipo=fila[1]
             )
             tipos_cancha.append(tipo_cancha)
         cursor.close()
         return tipos_cancha
+    
+    @staticmethod
+    def obtener_tipo_cancha_por_id(id_tipo: int):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute('''SELECT id_tipo, tipo FROM TipoCancha WHERE id_tipo = ?''', (id_tipo,))
+        fila = cursor.fetchone()
+        tipo_cancha = None
+        if fila:
+            tipo_cancha = TipoCancha(
+                tipo=fila[1]
+            )
+        cursor.close()
+        return tipo_cancha
 
     @staticmethod
     def modificar_tipo_cancha(tipo_cancha: TipoCancha):

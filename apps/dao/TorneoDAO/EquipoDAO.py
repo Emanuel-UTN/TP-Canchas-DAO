@@ -1,5 +1,6 @@
 from dao.conexion import ConexionDB
 from models.Torneo.Equipo import Equipo
+from dao.ClienteDAO.ClienteDAO import ClienteDAO
 
 class EquipoDAO:
     @staticmethod
@@ -46,13 +47,27 @@ class EquipoDAO:
         filas = cursor.fetchall()
         for fila in filas:
             equipo = Equipo(
-                id_equipo=fila[0],
-                dni_delegado=fila[1],
+                delegado=ClienteDAO.obtener_cliente_por_dni(fila[1]),
                 nombre=fila[2]
             )
             equipos.append(equipo)
         cursor.close()
         return equipos
+    
+    @staticmethod
+    def obtener_equipo_por_id(id_equipo: int):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute('''SELECT id_equipo, dni_delegado, nombre FROM Equipo WHERE id_equipo = ?''', (id_equipo,))
+        fila = cursor.fetchone()
+        equipo = None
+        if fila:
+            equipo = Equipo(
+                delegado=ClienteDAO.obtener_cliente_por_dni(fila[1]),
+                nombre=fila[2]
+            )
+        cursor.close()
+        return equipo
     
     @staticmethod
     def modificar_equipo(equipo: Equipo):

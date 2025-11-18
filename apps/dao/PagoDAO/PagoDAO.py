@@ -1,5 +1,6 @@
 from dao.conexion import ConexionDB
 from models.Pago.Pago import Pago
+from dao.PagoDAO.MetodoPagoDAO import MetodoPagoDAO
 
 class PagoDAO:
     @staticmethod
@@ -48,14 +49,29 @@ class PagoDAO:
         filas = cursor.fetchall()
         for fila in filas:
             pago = Pago(
-                id_pago=fila[0],
-                id_metodo_pago=fila[1],
+                metodo_pago=MetodoPagoDAO.obtener_metodo_pago_por_id(fila[1]),
                 fecha_hora=fila[2],
                 monto=fila[3]
             )
             pagos.append(pago)
         cursor.close()
         return pagos
+    
+    @staticmethod
+    def obtener_pago_por_id(id_pago: int):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute('''SELECT id_pago, id_metodo_pago, fecha_hora, monto FROM Pago WHERE id_pago = ?''', (id_pago,))
+        fila = cursor.fetchone()
+        pago = None
+        if fila:
+            pago = Pago(
+                metodo_pago=MetodoPagoDAO.obtener_metodo_pago_por_id(fila[1]),
+                fecha_hora=fila[2],
+                monto=fila[3]
+            )
+        cursor.close()
+        return pago
     
     @staticmethod
     def modificar_pago(pago: Pago):
