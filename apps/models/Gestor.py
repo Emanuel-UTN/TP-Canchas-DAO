@@ -1,8 +1,8 @@
-from apps.models.Cancha import Cancha
-from apps.models.Cliente import Cliente
-from apps.models.Reserva import Reserva
-from apps.models.Pago import Pago
-from apps.models.Torneo import Torneo
+from models.Cancha.Cancha import Cancha
+from models.Cliente.Cliente import Cliente
+from models.Reserva.Reserva import Reserva
+from models.Pago.Pago import Pago
+from models.Torneo.Torneo import Torneo
 
 class GestorReservas:
     def __init__(self):
