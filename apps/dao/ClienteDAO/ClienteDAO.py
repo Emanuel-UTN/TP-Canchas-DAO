@@ -4,30 +4,38 @@ from models.Cliente.Cliente import Cliente
 class ClienteDAO:
     @staticmethod
     def crear_tabla():
-        conexion = ConexionDB().obtener_conexion()
-        cursor = conexion.cursor()
+        try:
+            conexion = ConexionDB().obtener_conexion()
+            cursor = conexion.cursor()
 
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Cliente (
-                dni INTEGER PRIMARY KEY,
-                nombre TEXT,
-                apellido TEXT,
-                telefono TEXT
-                )
-            ''')
-        conexion.commit()
-        cursor.close()
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS Cliente (
+                    dni INTEGER PRIMARY KEY,
+                    nombre TEXT,
+                    apellido TEXT,
+                    telefono TEXT
+                    )
+                ''')
+            conexion.commit()
+            cursor.close()
+        except Exception as e:
+            print(f"Error al crear tabla Cliente: {e}")
+            raise
 
     @staticmethod
     def agregar_cliente(cliente: Cliente):
-        conexion = ConexionDB().obtener_conexion()
-        cursor = conexion.cursor()
-        cursor.execute('''
-            INSERT INTO Cliente (dni, nombre, apellido, telefono)
-            VALUES (?, ?, ?, ?)
-        ''', (cliente.dni, cliente.nombre, cliente.apellido, cliente.telefono))
-        conexion.commit()
-        cursor.close()
+        try:
+            conexion = ConexionDB().obtener_conexion()
+            cursor = conexion.cursor()
+            cursor.execute('''
+                INSERT OR IGNORE INTO Cliente (dni, nombre, apellido, telefono)
+                VALUES (?, ?, ?, ?)
+            ''', (cliente.dni, cliente.nombre, cliente.apellido, cliente.telefono))
+            conexion.commit()
+            cursor.close()
+        except Exception as e:
+            print(f"Error al agregar cliente: {e}")
+            raise
     
     @staticmethod
     def eliminar_cliente(dni: int):
