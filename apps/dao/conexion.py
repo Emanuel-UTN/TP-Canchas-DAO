@@ -6,7 +6,7 @@ class ConexionDB:
     def __new__(cls):
         if cls._instancia is None:
             cls._instancia = super().__new__(cls)
-            cls._instancia._conexion = sqlite3.connect("bd_canchas.db")
+            cls._instancia._conexion = sqlite3.connect("bd_canchas.db", check_same_thread=False)
             cls._instancia._conexion.row_factory = sqlite3.Row
         return cls._instancia
 
