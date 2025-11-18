@@ -11,7 +11,7 @@ class TorneoDAO:
             CREATE TABLE IF NOT EXISTS Torneo (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 fecha_inicio DATETIME,
-                fecha_fin DATETIME
+                fecha_fin DATETIME,
                 costo_inscripcion REAL,
                 premio REAL
                 )
