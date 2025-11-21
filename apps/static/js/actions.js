@@ -124,3 +124,135 @@ async function eliminarTorneo(id) {
         alert('Error: ' + error.message);
     }
 }
+
+// ---- Tipos de Cancha (CRUD por nombre) ----
+async function eliminarTipoCancha(nombre_tipo) {
+    const decoded = decodeURIComponent(nombre_tipo);
+    if (!confirm(`¿Eliminar tipo de cancha "${decoded}"?`)) return;
+    try {
+        const response = await fetch(`/api/tipos-cancha/${encodeURIComponent(decoded)}`, {method: 'DELETE'});
+        if (response.ok) {
+            alert('Tipo de cancha eliminado');
+            loadTabData('tipos-cancha');
+        } else {
+            const error = await response.json();
+            alert('Error: ' + error.error);
+        }
+    } catch (e) {
+        alert('Error: ' + e.message);
+    }
+}
+
+async function editarTipoCancha(nombre_tipo) {
+    const decoded = decodeURIComponent(nombre_tipo);
+    try {
+        const res = await fetch(`/api/tipos-cancha/${encodeURIComponent(decoded)}`);
+        if (!res.ok) {
+            const error = await res.json();
+            alert('Error: ' + (error.error || 'No se pudo obtener el tipo'));
+            return;
+        }
+        const tipo = await res.json();
+        document.getElementById('modal-editar-tipo').style.display = 'block';
+        document.getElementById('edit-tipo-actual').value = decoded;
+        document.getElementById('edit-tipo-nombre').value = tipo.tipo;
+    } catch (e) {
+        alert('Error: ' + e.message);
+    }
+}
+
+function cerrarModalEditarTipo() {
+    document.getElementById('modal-editar-tipo').style.display = 'none';
+}
+
+async function guardarCambiosTipoCancha() {
+    const actual = document.getElementById('edit-tipo-actual').value;
+    const nuevo = document.getElementById('edit-tipo-nombre').value;
+    const errorTipo = Validaciones.esTextoValido(nuevo, 'Tipo de cancha', 3, 50);
+    if (errorTipo) { Validaciones.mostrarErrores([errorTipo]); return; }
+    try {
+        const res = await fetch(`/api/tipos-cancha/${encodeURIComponent(actual)}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({tipo: nuevo.trim()})
+        });
+        if (res.ok) {
+            cerrarModalEditarTipo();
+            loadTabData('tipos-cancha');
+        } else {
+            const err = await res.json();
+            alert('Error: ' + err.error);
+        }
+    } catch (e) {
+        alert('Error: ' + e.message);
+    }
+}
+
+// ---- Servicios (CRUD por nombre) ----
+async function eliminarServicio(nombre_servicio) {
+    const decoded = decodeURIComponent(nombre_servicio);
+    if (!confirm(`¿Eliminar servicio "${decoded}"?`)) return;
+    try {
+        const response = await fetch(`/api/servicios/${encodeURIComponent(decoded)}`, {method: 'DELETE'});
+        if (response.ok) {
+            alert('Servicio eliminado');
+            loadTabData('servicios');
+        } else {
+            const error = await response.json();
+            alert('Error: ' + error.error);
+        }
+    } catch (e) {
+        alert('Error: ' + e.message);
+    }
+}
+
+async function editarServicio(nombre_servicio) {
+    const decoded = decodeURIComponent(nombre_servicio);
+    try {
+        const res = await fetch(`/api/servicios/${encodeURIComponent(decoded)}`);
+        if (!res.ok) {
+            const error = await res.json();
+            alert('Error: ' + (error.error || 'No se pudo obtener el servicio'));
+            return;
+        }
+        const servicio = await res.json();
+        document.getElementById('modal-editar-servicio').style.display = 'block';
+        document.getElementById('edit-servicio-actual').value = decoded;
+        document.getElementById('edit-servicio-nombre').value = servicio.servicio;
+        document.getElementById('edit-servicio-costo').value = servicio.costo;
+    } catch (e) {
+        alert('Error: ' + e.message);
+    }
+}
+
+function cerrarModalEditarServicio() {
+    document.getElementById('modal-editar-servicio').style.display = 'none';
+}
+
+async function guardarCambiosServicio() {
+    const actual = document.getElementById('edit-servicio-actual').value;
+    const nuevo = document.getElementById('edit-servicio-nombre').value;
+    const costo = document.getElementById('edit-servicio-costo').value;
+    const errores = [];
+    const errNombre = Validaciones.esTextoValido(nuevo, 'Servicio', 3, 100);
+    if (errNombre) errores.push(errNombre);
+    const errCosto = Validaciones.esNumeroPositivo(costo, 'Costo');
+    if (errCosto) errores.push(errCosto);
+    if (Validaciones.mostrarErrores(errores)) return;
+    try {
+        const res = await fetch(`/api/servicios/${encodeURIComponent(actual)}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({servicio: nuevo.trim(), costo: parseFloat(costo)})
+        });
+        if (res.ok) {
+            cerrarModalEditarServicio();
+            loadTabData('servicios');
+        } else {
+            const err = await res.json();
+            alert('Error: ' + err.error);
+        }
+    } catch (e) {
+        alert('Error: ' + e.message);
+    }
+}
