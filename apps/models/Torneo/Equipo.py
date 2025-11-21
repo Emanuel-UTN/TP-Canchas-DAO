@@ -1,4 +1,4 @@
-from apps.models.Cliente import Cliente
+from models.Cliente.Cliente import Cliente
 
 class Equipo:
     def __init__(self, nombre: str, delegado: Cliente):

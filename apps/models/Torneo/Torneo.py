@@ -1,5 +1,5 @@
-import Equipo
-import Partido
+from models.Torneo.Equipo import Equipo
+from models.Torneo.Partido import Partido
 
 class Torneo:
     def __init__(self, fecha_inicio, fecha_fin, costo_inscripcion, premio):
