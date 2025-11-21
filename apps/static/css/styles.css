@@ -267,7 +267,74 @@ tr:hover {
     font-weight: 600;
 }
 
-/* 10. Media Queries */
+/* 10. Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.modal-content {
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 600px;
+    margin: 100px auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    z-index: 2;
+}
+
+.modal-content h3 {
+    font-size: 1.6em;
+    color: var(--text-color);
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.modal-content label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.modal-content input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.modal-content .btn {
+    margin-top: 20px;
+    margin-right: 10px;
+}
+
+/* 11. Media Queries */
 @media (max-width: 768px) {
     .form-row {
         grid-template-columns: 1fr;
@@ -280,5 +347,10 @@ tr:hover {
     .tab-button {
         flex: 1 1 auto;
         text-align: center;
+    }
+    
+    .modal-content {
+        margin: 20px;
+        max-width: calc(100% - 40px);
     }
 }

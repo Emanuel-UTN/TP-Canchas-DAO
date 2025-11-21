@@ -15,6 +15,9 @@ async function eliminarCliente(dni) {
     }
 }
 
+// Variable to store the element that had focus before the modal opened
+let previouslyFocusedElement = null;
+
 async function editarCliente(dni) {
     try {
         const res = await fetch(`/api/clientes/${dni}`);
@@ -24,16 +27,83 @@ async function editarCliente(dni) {
             return;
         }
         const cliente = await res.json();
+        
+        // Store the currently focused element
+        previouslyFocusedElement = document.activeElement;
+        
         // Mostrar modal
-        document.getElementById("modal-editar").style.display = "block";
+        const modal = document.getElementById("modal-editar");
+        modal.style.display = "block";
 
         // Cargar datos
         document.getElementById("edit-dni").value = cliente.dni;
         document.getElementById("edit-nombre").value = cliente.nombre;
         document.getElementById("edit-apellido").value = cliente.apellido;
         document.getElementById("edit-telefono").value = cliente.telefono;
+        
+        // Set focus to the first editable field
+        setTimeout(() => {
+            document.getElementById("edit-nombre").focus();
+        }, 100);
+        
+        // Remove any existing listener before adding to prevent duplicates
+        modal.removeEventListener('keydown', handleModalKeydown);
+        // Add keyboard event listener for Escape key
+        modal.addEventListener('keydown', handleModalKeydown);
     } catch (error) {
         alert('Error: ' + error.message);
+    }
+}
+
+function cerrarModalEditar() {
+    const modal = document.getElementById("modal-editar");
+    modal.style.display = "none";
+    
+    // Remove keyboard event listener
+    modal.removeEventListener('keydown', handleModalKeydown);
+    
+    // Restore focus to the previously focused element
+    if (previouslyFocusedElement) {
+        previouslyFocusedElement.focus();
+        previouslyFocusedElement = null;
+    }
+}
+
+function handleModalKeydown(event) {
+    const modal = document.getElementById("modal-editar");
+    
+    // Close modal on Escape key
+    if (event.key === 'Escape') {
+        event.preventDefault();
+        cerrarModalEditar();
+        return;
+    }
+    
+    // Focus trap - keep focus within modal
+    if (event.key === 'Tab') {
+        const focusableElements = modal.querySelectorAll(
+            'input:not([readonly]):not([disabled]), button:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+        );
+        
+        // Check if there are any focusable elements
+        if (focusableElements.length === 0) return;
+        
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+        
+        if (event.shiftKey) {
+            // Shift + Tab
+            if (document.activeElement === firstElement) {
+                event.preventDefault();
+                lastElement.focus();
+            }
+        } else {
+            // Tab
+            if (document.activeElement === lastElement) {
+                event.preventDefault();
+                firstElement.focus();
+            }
+        }
     }
 }
 
@@ -70,7 +140,7 @@ async function guardarCambiosCliente() {
             alert('Error: ' + error.error);
             return;
         }
-        document.getElementById("modal-editar").style.display = "none";
+        cerrarModalEditar();
         loadTabData('clientes');
     } catch (error) {
         alert('Error: ' + error.message);
