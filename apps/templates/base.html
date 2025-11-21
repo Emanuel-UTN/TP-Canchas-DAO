@@ -11,14 +11,14 @@
         <h1>🏆 Gestión de Canchas</h1>
         
         <div class="tabs">
-            <button class="tab-button {% if active_tab == 'clientes' %}active{% endif %}" onclick="showTab('clientes')">Clientes</button>
-            <button class="tab-button {% if active_tab == 'canchas' %}active{% endif %}" onclick="showTab('canchas')">Canchas</button>
-            <button class="tab-button {% if active_tab == 'reservas' %}active{% endif %}" onclick="showTab('reservas')">Reservas</button>
-            <button class="tab-button {% if active_tab == 'pagos' %}active{% endif %}" onclick="showTab('pagos')">Pagos</button>
-            <button class="tab-button {% if active_tab == 'torneos' %}active{% endif %}" onclick="showTab('torneos')">Torneos</button>
-            <button class="tab-button {% if active_tab == 'tipos-cancha' %}active{% endif %}" onclick="showTab('tipos-cancha')">Tipos Cancha</button>
-            <button class="tab-button {% if active_tab == 'servicios' %}active{% endif %}" onclick="showTab('servicios')">Servicios</button>
-            <button class="tab-button {% if active_tab == 'metodos-pago' %}active{% endif %}" onclick="showTab('metodos-pago')">Métodos Pago</button>
+            <a href="/clientes" class="tab-button {% if active_tab == 'clientes' %}active{% endif %}">Clientes</a>
+            <a href="/canchas" class="tab-button {% if active_tab == 'canchas' %}active{% endif %}">Canchas</a>
+            <a href="/reservas" class="tab-button {% if active_tab == 'reservas' %}active{% endif %}">Reservas</a>
+            <a href="/pagos" class="tab-button {% if active_tab == 'pagos' %}active{% endif %}">Pagos</a>
+            <a href="/torneos" class="tab-button {% if active_tab == 'torneos' %}active{% endif %}">Torneos</a>
+            <a href="/tipos-cancha" class="tab-button {% if active_tab == 'tipos-cancha' %}active{% endif %}">Tipos Cancha</a>
+            <a href="/servicios" class="tab-button {% if active_tab == 'servicios' %}active{% endif %}">Servicios</a>
+            <a href="/metodos-pago" class="tab-button {% if active_tab == 'metodos-pago' %}active{% endif %}">Métodos Pago</a>
         </div>
 
         {% block content %}
