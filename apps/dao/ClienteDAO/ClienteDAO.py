@@ -11,9 +11,10 @@ class ClienteDAO:
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS Cliente (
                     dni INTEGER PRIMARY KEY,
-                    nombre TEXT,
-                    apellido TEXT,
-                    telefono TEXT
+                    nombre TEXT NOT NULL CHECK(length(trim(nombre)) >= 2 AND length(trim(nombre)) <= 100),
+                    apellido TEXT NOT NULL CHECK(length(trim(apellido)) >= 2 AND length(trim(apellido)) <= 100),
+                    telefono TEXT NOT NULL CHECK(length(replace(replace(telefono, ' ', ''), '-', '')) >= 7 AND length(replace(replace(telefono, ' ', ''), '-', '')) <= 15),
+                    CHECK(dni >= 1000000 AND dni < 100000000)
                     )
                 ''')
             conexion.commit()
