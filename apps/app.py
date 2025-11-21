@@ -76,15 +76,15 @@ def page_metodos_pago():
 
 
 # Registrar blueprints (importar después de crear app y de insertar el path)
-from servicios.clientes import bp_clientes
-from servicios.canchas import bp_canchas
-from servicios.tipos_cancha import bp_tipos
-from servicios.servicios import bp_servicios
-from servicios.reservas import bp_reservas
-from servicios.estados_reserva import bp_estados
-from servicios.pagos import bp_pagos
-from servicios.metodos_pago import bp_metodos_pago
-from servicios.torneos import bp_torneos
+from services.clientes import bp_clientes
+from services.canchas import bp_canchas
+from services.tipos_cancha import bp_tipos
+from services.servicios import bp_servicios
+from services.reservas import bp_reservas
+from services.estados_reserva import bp_estados
+from services.pagos import bp_pagos
+from services.metodos_pago import bp_metodos_pago
+from services.torneos import bp_torneos
 
 app.register_blueprint(bp_clientes)
 app.register_blueprint(bp_canchas)
