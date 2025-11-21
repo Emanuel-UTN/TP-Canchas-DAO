@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- TAB CLIENTES -->
+<div id="clientes" class="tab-content active">
+    <div class="section-header">
+        <h2 class="section-title">Clientes</h2>
+        <button class="btn btn-primary" onclick="showForm('cliente')">+ Agregar Cliente</button>
+    </div>
+    
+    <div id="form-cliente" class="form-container" style="display: none;">
+        <h3>Nuevo Cliente</h3>
+        <form onsubmit="guardarCliente(event)">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>DNI</label>
+                    <input type="number" id="cliente-dni" required>
+                </div>
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" id="cliente-nombre" required>
+                </div>
+                <div class="form-group">
+                    <label>Apellido</label>
+                    <input type="text" id="cliente-apellido" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" id="cliente-telefono" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <button type="button" class="btn btn-danger" onclick="cancelarForm('cliente')">Cancelar</button>
+        </form>
+    </div>
+
+    <div id="clientes-table-container">
+        <div class="loading">Cargando...</div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- TAB TIPOS CANCHA -->
+<div id="tipos-cancha" class="tab-content active">
+    <div class="section-header">
+        <h2 class="section-title">Tipos de Cancha</h2>
+        <button class="btn btn-primary" onclick="showForm('tipo-cancha')">+ Agregar Tipo</button>
+    </div>
+    
+    <div id="form-tipo-cancha" class="form-container" style="display: none;">
+        <h3>Nuevo Tipo de Cancha</h3>
+        <form onsubmit="guardarTipoCancha(event)">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Tipo</label>
+                    <input type="text" id="tipo-cancha-nombre" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <button type="button" class="btn btn-danger" onclick="cancelarForm('tipo-cancha')">Cancelar</button>
+        </form>
+    </div>
+
+    <div id="tipos-cancha-table-container">
+        <div class="loading">Cargando...</div>
+    </div>
+</div>
+{% endblock %}

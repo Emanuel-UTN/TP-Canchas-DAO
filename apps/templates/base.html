@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gestión de Canchas{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 Gestión de Canchas</h1>
+        
+        <div class="tabs">
+            <button class="tab-button {% if active_tab == 'clientes' %}active{% endif %}" onclick="showTab('clientes')">Clientes</button>
+            <button class="tab-button {% if active_tab == 'canchas' %}active{% endif %}" onclick="showTab('canchas')">Canchas</button>
+            <button class="tab-button {% if active_tab == 'reservas' %}active{% endif %}" onclick="showTab('reservas')">Reservas</button>
+            <button class="tab-button {% if active_tab == 'pagos' %}active{% endif %}" onclick="showTab('pagos')">Pagos</button>
+            <button class="tab-button {% if active_tab == 'torneos' %}active{% endif %}" onclick="showTab('torneos')">Torneos</button>
+            <button class="tab-button {% if active_tab == 'tipos-cancha' %}active{% endif %}" onclick="showTab('tipos-cancha')">Tipos Cancha</button>
+            <button class="tab-button {% if active_tab == 'servicios' %}active{% endif %}" onclick="showTab('servicios')">Servicios</button>
+            <button class="tab-button {% if active_tab == 'metodos-pago' %}active{% endif %}" onclick="showTab('metodos-pago')">Métodos Pago</button>
+        </div>
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script src="{{ url_for('static', filename='js/validaciones.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/navegacion.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/data-loader.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/renderers.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/forms.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/actions.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block scripts %}
+    {% endblock %}
+</body>
+</html>

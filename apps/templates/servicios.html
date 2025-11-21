@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- TAB SERVICIOS -->
+<div id="servicios" class="tab-content active">
+    <div class="section-header">
+        <h2 class="section-title">Servicios</h2>
+        <button class="btn btn-primary" onclick="showForm('servicio')">+ Agregar Servicio</button>
+    </div>
+    
+    <div id="form-servicio" class="form-container" style="display: none;">
+        <h3>Nuevo Servicio</h3>
+        <form onsubmit="guardarServicio(event)">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Servicio</label>
+                    <input type="text" id="servicio-nombre" required>
+                </div>
+                <div class="form-group">
+                    <label>Costo</label>
+                    <input type="number" step="0.01" id="servicio-costo" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <button type="button" class="btn btn-danger" onclick="cancelarForm('servicio')">Cancelar</button>
+        </form>
+    </div>
+
+    <div id="servicios-table-container">
+        <div class="loading">Cargando...</div>
+    </div>
+</div>
+{% endblock %}
