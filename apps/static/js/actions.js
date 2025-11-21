@@ -46,6 +46,8 @@ async function editarCliente(dni) {
             document.getElementById("edit-nombre").focus();
         }, 100);
         
+        // Remove any existing listener before adding to prevent duplicates
+        modal.removeEventListener('keydown', handleModalKeydown);
         // Add keyboard event listener for Escape key
         modal.addEventListener('keydown', handleModalKeydown);
     } catch (error) {
@@ -80,8 +82,12 @@ function handleModalKeydown(event) {
     // Focus trap - keep focus within modal
     if (event.key === 'Tab') {
         const focusableElements = modal.querySelectorAll(
-            'input:not([readonly]), button, [tabindex]:not([tabindex="-1"])'
+            'input:not([readonly]):not([disabled]), button:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
         );
+        
+        // Check if there are any focusable elements
+        if (focusableElements.length === 0) return;
+        
         const firstElement = focusableElements[0];
         const lastElement = focusableElements[focusableElements.length - 1];
         
