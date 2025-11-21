@@ -78,10 +78,9 @@ function renderPagos(data, container) {
         container.innerHTML = '<div class="empty-state">No hay pagos registrados</div>';
         return;
     }
-    let html = '<table><thead><tr><th>ID Pago</th><th>Método</th><th>Fecha</th><th>Monto</th></tr></thead><tbody>';
+    let html = '<table><thead><tr><th>Método</th><th>Fecha</th><th>Monto</th></tr></thead><tbody>';
     data.forEach(pago => {
         html += `<tr>
-            <td>${pago.id_pago}</td>
             <td>${pago.id_metodo_pago}</td>
             <td>${pago.fecha_hora}</td>
             <td>$${pago.monto}</td>
@@ -124,10 +123,9 @@ function renderTiposCancha(data, container) {
         container.innerHTML = '<div class="empty-state">No hay tipos de cancha registrados</div>';
         return;
     }
-    let html = '<table><thead><tr><th>ID</th><th>Tipo</th></tr></thead><tbody>';
+    let html = '<table><thead><tr><th>Tipo</th></tr></thead><tbody>';
     data.forEach(tipo => {
         html += `<tr>
-            <td>${tipo.id_tipo}</td>
             <td>${tipo.tipo}</td>
         </tr>`;
     });
@@ -144,10 +142,9 @@ function renderServicios(data, container) {
         container.innerHTML = '<div class="empty-state">No hay servicios registrados</div>';
         return;
     }
-    let html = '<table><thead><tr><th>ID</th><th>Servicio</th><th>Costo</th></tr></thead><tbody>';
+    let html = '<table><thead><tr><th>Servicio</th><th>Costo</th></tr></thead><tbody>';
     data.forEach(servicio => {
         html += `<tr>
-            <td>${servicio.id_servicio}</td>
             <td>${servicio.servicio}</td>
             <td>$${servicio.costo}</td>
         </tr>`;
@@ -165,10 +162,9 @@ function renderMetodosPago(data, container) {
         container.innerHTML = '<div class="empty-state">No hay métodos de pago registrados</div>';
         return;
     }
-    let html = '<table><thead><tr><th>ID</th><th>Método</th></tr></thead><tbody>';
+    let html = '<table><thead><tr><th>Método</th></tr></thead><tbody>';
     data.forEach(metodo => {
         html += `<tr>
-            <td>${metodo.id_metodo_pago}</td>
             <td>${metodo.metodo}</td>
         </tr>`;
     });

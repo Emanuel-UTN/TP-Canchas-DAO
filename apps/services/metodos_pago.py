@@ -9,7 +9,6 @@ def obtener_metodos_pago():
     try:
         metodos = MetodoPagoDAO.obtener_metodos_pago()
         return jsonify([{
-            'id_metodo_pago': m.id_metodo_pago,
             'metodo': m.metodo
         } for m in metodos])
     except Exception as e:

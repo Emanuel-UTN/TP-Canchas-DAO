@@ -9,7 +9,6 @@ def obtener_servicios():
     try:
         servicios = ServicioDAO.obtener_servicios()
         return jsonify([{
-            'id_servicio': s.id_servicio,
             'servicio': s.servicio,
             'costo': s.costo
         } for s in servicios])

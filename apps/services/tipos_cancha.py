@@ -9,7 +9,6 @@ def obtener_tipos_cancha():
     try:
         tipos = TipoCanchaDAO.obtener_tipos_cancha()
         return jsonify([{
-            'id_tipo': t.id_tipo,
             'tipo': t.tipo
         } for t in tipos])
     except Exception as e:
