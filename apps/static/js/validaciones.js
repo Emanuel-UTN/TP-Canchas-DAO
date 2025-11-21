@@ -69,6 +69,21 @@ const Validaciones = {
         return null;
     },
     
+    esFechaDentroDeRango: (fecha, nombreCampo, mesesMaximos) => {
+        const error = Validaciones.esFechaFutura(fecha, nombreCampo);
+        if (error) return error;
+        
+        const fechaObj = new Date(fecha);
+        const ahora = new Date();
+        const fechaMaxima = new Date();
+        fechaMaxima.setMonth(fechaMaxima.getMonth() + mesesMaximos);
+        
+        if (fechaObj > fechaMaxima) {
+            return `${nombreCampo} no puede ser superior a ${mesesMaximos} meses desde hoy`;
+        }
+        return null;
+    },
+    
     esFechaPosterior: (fechaInicio, fechaFin) => {
         const inicio = new Date(fechaInicio);
         const fin = new Date(fechaFin);

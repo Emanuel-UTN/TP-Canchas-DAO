@@ -105,7 +105,7 @@ async function guardarReserva(event) {
     
     const errores = [];
     
-    const errorFecha = Validaciones.esFechaFutura(fecha, 'Fecha y hora de inicio');
+    const errorFecha = Validaciones.esFechaDentroDeRango(fecha, 'Fecha y hora de inicio', 3);
     if (errorFecha) errores.push(errorFecha);
     
     const errorHoras = Validaciones.esEnteroPositivo(horas, 'Cantidad de horas');

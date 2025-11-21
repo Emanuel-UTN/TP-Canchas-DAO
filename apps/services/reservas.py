@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from datetime import datetime, timedelta
 from dao.ReservaDAO.ReservaDAO import ReservaDAO
 from models.Reserva.Reserva import Reserva
 from models.Cliente.Cliente import Cliente
@@ -29,6 +30,14 @@ def obtener_reservas():
 def agregar_reserva():
     try:
         data = request.json
+        
+        # Validar que la reserva no sea más de 3 meses en el futuro
+        fecha_reserva = datetime.fromisoformat(data['fecha_hora_inicio'].replace('Z', '+00:00'))
+        fecha_maxima = datetime.now() + timedelta(days=90)  # 3 meses = 90 días aproximadamente
+        
+        if fecha_reserva > fecha_maxima:
+            return jsonify({'error': 'No se pueden hacer reservas con más de 3 meses de anticipación'}), 400
+        
         cliente_placeholder = Cliente(0, "", "", "")
         cancha_placeholder = Cancha(0, TipoCancha(""), 0)
         pago_placeholder = Pago(MetodoPago(""), "", 0)
@@ -53,6 +62,14 @@ def agregar_reserva():
 def modificar_reserva(nro_reserva):
     try:
         data = request.json
+        
+        # Validar que la reserva no sea más de 3 meses en el futuro
+        fecha_reserva = datetime.fromisoformat(data['fecha_hora_inicio'].replace('Z', '+00:00'))
+        fecha_maxima = datetime.now() + timedelta(days=90)  # 3 meses = 90 días aproximadamente
+        
+        if fecha_reserva > fecha_maxima:
+            return jsonify({'error': 'No se pueden hacer reservas con más de 3 meses de anticipación'}), 400
+        
         cliente_placeholder = Cliente(0, "", "", "")
         cancha_placeholder = Cancha(0, TipoCancha(""), 0)
         pago_placeholder = Pago(MetodoPago(""), "", 0)
