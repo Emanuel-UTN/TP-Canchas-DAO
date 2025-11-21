@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify, request
 from dao.CanchaDAO.CanchaDAO import CanchaDAO
-from dao.CanchaDAO.ServicioCanchaDAO import ServicioCanchaDAO
 from dao.CanchaDAO.ServicioDAO import ServicioDAO
 from models.Cancha.Cancha import Cancha
 from models.Cancha.TipoCancha import TipoCancha
@@ -14,7 +13,8 @@ def obtener_canchas():
         return jsonify([{
             'nro_cancha': c.nro_cancha,
             'tipo': c.tipo_cancha.tipo,
-            'costo_por_hora': c.costo_hora
+            'costo_por_hora': c.costo_hora,
+            'servicios': [s.servicio for s in c.servicios]
         } for c in canchas])
     except Exception as e:
         return jsonify({'error': str(e)}), 500
