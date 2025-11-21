@@ -30,14 +30,13 @@ class Reserva:
             self.estado = EstadoReserva.COMPLETADA
     
     def get_estado(self):
-        match self.estado:
-            case EstadoReserva.PENDIENTE:
-                return "Pendiente"
-            case EstadoReserva.CONFIRMADA:
-                return "Confirmada"
-            case EstadoReserva.CANCELADA:
-                return "Cancelada"
-            case EstadoReserva.COMPLETADA:
-                return "Completada"
-            case _:
-                return "Desconocido"
+        if self.estado == EstadoReserva.PENDIENTE:
+            return "Pendiente"
+        elif self.estado == EstadoReserva.CONFIRMADA:
+            return "Confirmada"
+        elif self.estado == EstadoReserva.CANCELADA:
+            return "Cancelada"
+        elif self.estado == EstadoReserva.COMPLETADA:
+            return "Completada"
+        else:
+            return "Desconocido"
