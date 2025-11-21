@@ -15,19 +15,26 @@ async function eliminarCliente(dni) {
     }
 }
 
-function editarCliente(dni) {
-    fetch(`/api/clientes/${dni}`)
-        .then(res => res.json())
-        .then(cliente => {
-            // Mostrar modal
-            document.getElementById("modal-editar").style.display = "block";
+async function editarCliente(dni) {
+    try {
+        const res = await fetch(`/api/clientes/${dni}`);
+        if (!res.ok) {
+            const error = await res.json();
+            alert('Error: ' + (error.error || 'No se pudo obtener el cliente'));
+            return;
+        }
+        const cliente = await res.json();
+        // Mostrar modal
+        document.getElementById("modal-editar").style.display = "block";
 
-            // Cargar datos
-            document.getElementById("edit-dni").value = cliente.dni;
-            document.getElementById("edit-nombre").value = cliente.nombre;
-            document.getElementById("edit-apellido").value = cliente.apellido;
-            document.getElementById("edit-telefono").value = cliente.telefono;
-        });
+        // Cargar datos
+        document.getElementById("edit-dni").value = cliente.dni;
+        document.getElementById("edit-nombre").value = cliente.nombre;
+        document.getElementById("edit-apellido").value = cliente.apellido;
+        document.getElementById("edit-telefono").value = cliente.telefono;
+    } catch (error) {
+        alert('Error: ' + error.message);
+    }
 }
 
 function guardarCambiosCliente() {
