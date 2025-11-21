@@ -28,3 +28,16 @@ class Reserva:
     def completar_reserva(self):
         if self.estado == EstadoReserva.CONFIRMADA:
             self.estado = EstadoReserva.COMPLETADA
+    
+    def get_estado(self):
+        match self.estado:
+            case EstadoReserva.PENDIENTE:
+                return "Pendiente"
+            case EstadoReserva.CONFIRMADA:
+                return "Confirmada"
+            case EstadoReserva.CANCELADA:
+                return "Cancelada"
+            case EstadoReserva.COMPLETADA:
+                return "Completada"
+            case _:
+                return "Desconocido"

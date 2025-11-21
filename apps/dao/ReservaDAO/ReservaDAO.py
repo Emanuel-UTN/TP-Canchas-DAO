@@ -37,7 +37,7 @@ class ReservaDAO:
         cursor.execute('''
             INSERT INTO Reserva (fecha_hora_inicio, horas, nro_cancha, dni_cliente, id_pago, id_estado)
             VALUES (?, ?, ?, ?, ?, ?)
-        ''', (reserva.fecha_hora_inicio, reserva.horas, reserva.nro_cancha, reserva.dni_cliente, reserva.id_pago, reserva.id_estado))
+        ''', (reserva.fecha_hora_inicio, reserva.horas, reserva.cancha.nro_cancha, reserva.cliente.dni, None, EstadoReservaDAO.obtener_id_estado_reserva_por_nombre("Pendiente")))
         conexion.commit()
         cursor.close()
 
@@ -61,7 +61,7 @@ class ReservaDAO:
                 nro_reserva=fila[0],
                 fecha_hora_inicio=fila[1],
                 horas=fila[2],
-                cancha=CanchaDAO.obtener_cancha_por_numero(fila[3]),
+                cancha=CanchaDAO.obtener_cancha_por_nro(fila[3]),
                 cliente=ClienteDAO.obtener_cliente_por_dni(fila[4]),
                 pago=PagoDAO.obtener_pago_por_id(fila[5])
             )

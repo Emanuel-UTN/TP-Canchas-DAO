@@ -71,15 +71,25 @@ function renderReservas(data, container) {
         container.innerHTML = '<div class="empty-state">No hay reservas registradas</div>';
         return;
     }
+
+    function formatDate(d){
+        const pad = n => String(n).padStart(2, '0');
+        let fechaFormateada = 'Fecha inválida';
+        if (!isNaN(d)) {
+            fechaFormateada = `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        }
+        return fechaFormateada
+    }
+
     let html = '<table><thead><tr><th>Nro. Reserva</th><th>Fecha Inicio</th><th>Horas</th><th>Cancha</th><th>Cliente</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>';
     data.forEach(reserva => {
         html += `<tr>
             <td>${reserva.nro_reserva}</td>
-            <td>${reserva.fecha_hora_inicio}</td>
+            <td>${formatDate(new Date(reserva.fecha_hora_inicio))}</td>
             <td>${reserva.horas}</td>
-            <td>${reserva.nro_cancha}</td>
-            <td>${reserva.dni_cliente}</td>
-            <td>${reserva.id_estado}</td>
+            <td>${reserva.cancha.nro_cancha} - ${reserva.cancha.tipo}</td>
+            <td>${reserva.cliente.nombre} ${reserva.cliente.apellido}</td>
+            <td>${reserva.estado}</td>
             <td><button class="btn btn-danger" onclick="eliminarReserva(${reserva.nro_reserva})">Eliminar</button></td>
         </tr>`;
     });

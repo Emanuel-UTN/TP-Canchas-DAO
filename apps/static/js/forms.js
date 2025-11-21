@@ -96,12 +96,27 @@ async function guardarCancha(event) {
 async function guardarReserva(event) {
     event.preventDefault();
     
-    const fecha = document.getElementById('reserva-fecha').value;
+    let fecha = document.getElementById('reserva-fecha').value;
+    // Normalizar la fecha a precisión de hora (minutos = 00)
+    if (fecha) {
+        // formato esperado: YYYY-MM-DDTHH:MM -> mantener YYYY-MM-DDTHH:00
+        fecha = fecha.substring(0, 13) + ':00';
+        // reflejar cambio en el input por si el usuario lo ve
+        const fEl = document.getElementById('reserva-fecha');
+        if (fEl) fEl.value = fecha;
+    }
     const horas = document.getElementById('reserva-horas').value;
     const nroCancha = document.getElementById('reserva-cancha').value;
-    const dniCliente = document.getElementById('reserva-cliente').value;
-    const idPago = document.getElementById('reserva-pago').value;
-    const idEstado = document.getElementById('reserva-estado').value;
+    const clienteHiddenEl = document.getElementById('reserva-cliente');
+    if (!clienteHiddenEl) {
+        alert('Error interno: no se encontró el campo de cliente. Recargue la página e intente de nuevo.');
+        return;
+    }
+    const dniCliente = clienteHiddenEl.value;
+    if (!dniCliente) {
+        alert('Por favor seleccione un cliente válido desde la lista antes de crear la reserva.');
+        return;
+    }
     
     const errores = [];
     
@@ -110,13 +125,7 @@ async function guardarReserva(event) {
     
     const errorHoras = Validaciones.esEnteroPositivo(horas, 'Cantidad de horas');
     if (errorHoras) errores.push(errorHoras);
-    else if (parseInt(horas) > 12) errores.push('La cantidad de horas no puede exceder 12');
-    
-    const errorCancha = Validaciones.esEnteroPositivo(nroCancha, 'Número de cancha');
-    if (errorCancha) errores.push(errorCancha);
-    
-    const errorCliente = Validaciones.esDNIValido(dniCliente);
-    if (errorCliente) errores.push(errorCliente);
+    else if (parseInt(horas) > 6) errores.push('La cantidad de horas no puede exceder 6');
     
     if (Validaciones.mostrarErrores(errores)) return;
     
@@ -124,9 +133,7 @@ async function guardarReserva(event) {
         fecha_hora_inicio: fecha,
         horas: parseInt(horas),
         nro_cancha: parseInt(nroCancha),
-        dni_cliente: parseInt(dniCliente),
-        id_pago: idPago ? parseInt(idPago) : null,
-        id_estado: idEstado ? parseInt(idEstado) : 1
+        dni_cliente: dniCliente ? parseInt(dniCliente) : null
     };
     try {
         const response = await fetch('/api/reservas', {
