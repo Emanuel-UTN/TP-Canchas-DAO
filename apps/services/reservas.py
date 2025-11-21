@@ -46,6 +46,8 @@ def agregar_reserva():
         
         if fecha_reserva > fecha_maxima:
             return jsonify({'error': 'No se pueden hacer reservas con más de 3 meses de anticipación'}), 400
+        elif fecha_reserva < datetime.now():
+            return jsonify({'error': 'No se pueden hacer reservas en fechas pasadas'}), 400
         
         cliente = ClienteDAO.obtener_cliente_por_dni(data['dni_cliente'])
         if not cliente:
@@ -54,6 +56,23 @@ def agregar_reserva():
         cancha = CanchaDAO.obtener_cancha_por_nro(data['nro_cancha'])
         if not cancha:
             return jsonify({'error': 'Cancha no encontrada'}), 404
+        
+        hora_inicio_nueva = fecha_reserva
+        hora_fin_nueva = hora_inicio_nueva + timedelta(hours=data['horas'])
+        reservas = ReservaDAO.obtener_reserva_por_cancha_y_fecha(data['nro_cancha'], hora_inicio_nueva, hora_fin_nueva)
+        for r in reservas:
+            hora_inicio_existente = datetime.fromisoformat(r.fecha_hora_inicio.replace('Z', '+00:00'))
+            hora_fin_existente = hora_inicio_existente + timedelta(hours=r.horas)
+            hora_inicio_nueva = fecha_reserva
+            hora_fin_nueva = hora_inicio_nueva + timedelta(hours=data['horas'])
+            
+            # Verificar si hay solapamiento de horarios
+            if (hora_inicio_nueva == hora_inicio_existente or hora_fin_nueva == hora_fin_existente or # Que alguna de las dos horas coincida
+                (hora_inicio_existente < hora_inicio_nueva < hora_fin_existente) or # La nueva empieza dentro de una existente
+                (hora_inicio_existente < hora_fin_nueva < hora_fin_existente) or # La nueva termina dentro de una existente
+                (hora_inicio_nueva < hora_inicio_existente and hora_fin_nueva > hora_fin_existente)): # La nueva engloba a una existente
+                return jsonify({'error': 'La cancha ya está reservada en el horario solicitado'}), 409
+            
         
         reserva = Reserva(
             nro_reserva=None,
