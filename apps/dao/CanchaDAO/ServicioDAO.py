@@ -68,6 +68,35 @@ class ServicioDAO:
             )
         cursor.close()
         return servicio
+    
+    @staticmethod
+    def obtener_id_servicio_por_nombre(nombre_servicio: str):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute('''SELECT id_servicio, servicio, costo FROM Servicio WHERE servicio = ?''', (nombre_servicio,))
+        fila = cursor.fetchone()
+        id_servicio = None
+        if fila:
+            id_servicio = fila[0]
+        cursor.close()
+        return id_servicio
+    
+    @staticmethod
+    def obtener_servicios_por_nombres(nombres_servicios: list):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        servicios = []
+        for nombre in nombres_servicios:
+            cursor.execute('''SELECT id_servicio, servicio, costo FROM Servicio WHERE servicio = ?''', (nombre,))
+            fila = cursor.fetchone()
+            if fila:
+                servicio = Servicio(
+                    servicio=fila[1],
+                    costo=fila[2]
+                )
+                servicios.append(servicio)
+        cursor.close()
+        return servicios
 
     @staticmethod
     def modificar_servicio(servicio: Servicio):

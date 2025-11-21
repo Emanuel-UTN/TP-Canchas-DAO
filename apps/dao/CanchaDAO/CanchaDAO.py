@@ -2,6 +2,7 @@ from dao.conexion import ConexionDB
 from models.Cancha.Cancha import Cancha
 from dao.CanchaDAO.TipoCanchaDAO import TipoCanchaDAO
 from dao.CanchaDAO.ServicioCanchaDAO import ServicioCanchaDAO
+from dao.CanchaDAO.ServicioDAO import ServicioDAO
 
 class CanchaDAO:
     @staticmethod
@@ -24,12 +25,28 @@ class CanchaDAO:
     def agregar_cancha(cancha: Cancha):
         conexion = ConexionDB().obtener_conexion()
         cursor = conexion.cursor()
+        # Insertar cancha
         cursor.execute('''
             INSERT INTO Cancha (id_tipo, costo_por_hora)
             VALUES (?, ?)
-        ''', (cancha.id_tipo, cancha.costo_por_hora))
+        ''', (TipoCanchaDAO.obtener_id_tipo_cancha_por_tipo(cancha.tipo_cancha.tipo), cancha.costo_hora))
+
+        # obtener id generado y commitear para que otras conexiones lo vean
+        nro_generado = cursor.lastrowid
         conexion.commit()
         cursor.close()
+        
+        # vincular servicios seleccionados (si vienen)
+        for s in cancha.servicios:
+            id_serv = ServicioDAO.obtener_id_servicio_por_nombre(s.servicio)
+            if id_serv is not None:
+                try:
+                    ServicioCanchaDAO.agregar_servicio_cancha(id_serv, nro_generado)
+                except Exception:
+                    # ignorar errores individuales de vinculación
+                    pass
+
+        return nro_generado
     
     @staticmethod
     def eliminar_cancha(nro_cancha: int):
@@ -82,7 +99,7 @@ class CanchaDAO:
             UPDATE Cancha
             SET id_tipo = ?, costo_por_hora = ?
             WHERE nro_cancha = ?
-        ''', (cancha.tipo_cancha.id_tipo, cancha.costo_hora, cancha.nro_cancha))
+        ''', (TipoCanchaDAO.obtener_id_tipo_cancha_por_tipo(cancha.tipo_cancha.tipo), cancha.costo_hora, cancha.nro_cancha))
         conexion.commit()
         cursor.close()
 

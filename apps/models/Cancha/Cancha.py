@@ -21,13 +21,13 @@ class Cancha:
     def obtener_detalles(self):
         return {
             "nro_cancha": self.nro_cancha,
-            "tipo_cancha": self.tipo_cancha.nombre,
+            "tipo_cancha": self.tipo_cancha.tipo,
             "costo_hora": self.costo_hora,
-            "servicios": [servicio.nombre for servicio in self.servicios]
+            "servicios": [servicio.servicio for servicio in self.servicios]
         }
     
     def calcular_costo_total(self, horas : int, servicios_a_utilizar : list):
         return self.costo_hora * horas + sum(servicio.costo for servicio in servicios_a_utilizar)
     
     def __str__(self):
-        return f"Cancha {self.nro_cancha} - Tipo: {self.tipo_cancha.nombre} - Costo por hora: {self.costo_hora}"
+        return f"Cancha {self.nro_cancha} - Tipo: {self.tipo_cancha.tipo} - Costo por hora: {self.costo_hora}"

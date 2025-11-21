@@ -31,11 +31,11 @@ function renderCanchas(data, container) {
         container.innerHTML = '<div class="empty-state">No hay canchas registradas</div>';
         return;
     }
-    let html = '<table><thead><tr><th>Nro. Cancha</th><th>ID Tipo</th><th>Costo por Hora</th><th>Acciones</th></tr></thead><tbody>';
+    let html = '<table><thead><tr><th>Nro. Cancha</th><th>Tipo</th><th>Costo por Hora</th><th>Acciones</th></tr></thead><tbody>';
     data.forEach(cancha => {
         html += `<tr>
             <td>${cancha.nro_cancha}</td>
-            <td>${cancha.id_tipo}</td>
+            <td>${cancha.tipo}</td>
             <td>$${cancha.costo_por_hora}</td>
             <td><button class="btn btn-danger" onclick="eliminarCancha(${cancha.nro_cancha})">Eliminar</button></td>
         </tr>`;
