@@ -24,7 +24,7 @@ class TipoCanchaDAO:
         cursor.execute('''
             INSERT INTO TipoCancha (tipo)
             VALUES (?)
-        ''', (tipo_cancha.tipo))
+        ''', (tipo_cancha.tipo,))
         conexion.commit()
         cursor.close()
 
@@ -64,6 +64,15 @@ class TipoCanchaDAO:
             )
         cursor.close()
         return tipo_cancha
+    
+    @staticmethod
+    def obtener_id_tipo_cancha_por_tipo(tipo: str):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute('''SELECT id_tipo, tipo FROM TipoCancha WHERE tipo = ?''', (tipo,))
+        fila = cursor.fetchone()
+        cursor.close()
+        return fila[0] if fila else None
 
     @staticmethod
     def modificar_tipo_cancha(tipo_cancha: TipoCancha):

@@ -31,11 +31,24 @@ function renderCanchas(data, container) {
         container.innerHTML = '<div class="empty-state">No hay canchas registradas</div>';
         return;
     }
-    let html = '<table><thead><tr><th>Nro. Cancha</th><th>ID Tipo</th><th>Costo por Hora</th><th>Acciones</th></tr></thead><tbody>';
+    let html = '<table><thead><tr><th>Nro. Cancha</th><th>Tipo</th><th>Servicios</th><th>Costo por Hora</th><th>Acciones</th></tr></thead><tbody>';
     data.forEach(cancha => {
+        // preparar listado de servicios (puede ser array de strings o array de objetos)
+        let serviciosText = '';
+        if (Array.isArray(cancha.servicios) && cancha.servicios.length > 0) {
+            serviciosText = cancha.servicios.map(s => {
+                if (typeof s === 'string') return s;
+                if (s && typeof s === 'object') return s.servicio ?? s.nombre ?? '';
+                return '';
+            }).filter(Boolean).join(', ');
+        } else {
+            serviciosText = '—';
+        }
+
         html += `<tr>
             <td>${cancha.nro_cancha}</td>
-            <td>${cancha.id_tipo}</td>
+            <td>${cancha.tipo}</td>
+            <td>${serviciosText}</td>
             <td>$${cancha.costo_por_hora}</td>
             <td><button class="btn btn-danger" onclick="eliminarCancha(${cancha.nro_cancha})">Eliminar</button></td>
         </tr>`;

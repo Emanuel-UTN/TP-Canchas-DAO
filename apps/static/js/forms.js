@@ -51,13 +51,18 @@ async function guardarCliente(event) {
 async function guardarCancha(event) {
     event.preventDefault();
     
-    const idTipo = document.getElementById('cancha-id-tipo').value;
+    const tipo = document.getElementById('cancha-tipo').value;
     const costo = document.getElementById('cancha-costo').value;
+    // obtener servicios seleccionados (multi-select)
+    const serviciosSelect = document.getElementById('cancha-servicios');
+    const serviciosSeleccionados = [];
+    if (serviciosSelect) {
+        Array.from(serviciosSelect.selectedOptions).forEach(opt => {
+            if (opt.value) serviciosSeleccionados.push(opt.value);
+        });
+    }
     
     const errores = [];
-    
-    const errorIdTipo = Validaciones.esEnteroPositivo(idTipo, 'ID del tipo de cancha');
-    if (errorIdTipo) errores.push(errorIdTipo);
     
     const errorCosto = Validaciones.esNumeroPositivo(costo, 'Costo por hora');
     if (errorCosto) errores.push(errorCosto);
@@ -65,8 +70,9 @@ async function guardarCancha(event) {
     if (Validaciones.mostrarErrores(errores)) return;
     
     const data = {
-        id_tipo: parseInt(idTipo),
-        costo_por_hora: parseFloat(costo)
+        tipo: tipo,
+        costo_por_hora: parseFloat(costo),
+        servicios: serviciosSeleccionados
     };
     try {
         const response = await fetch('/api/canchas', {

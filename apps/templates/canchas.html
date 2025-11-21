@@ -13,13 +13,21 @@
         <form onsubmit="guardarCancha(event)">
             <div class="form-row">
                 <div class="form-group">
-                    <label>Tipo de Cancha (ID)</label>
-                    <input type="number" id="cancha-id-tipo" required>
+                    <label>Tipo de Cancha</label>
+                    <select id="cancha-tipo" required>
+                        <option value="" disabled selected>Seleccionar tipo</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>Costo por Hora</label>
-                    <input type="number" step="0.01" id="cancha-costo" required>
+                    <input type="number" step="1" id="cancha-costo" required>
                 </div>
+                    <div class="form-group">
+                        <label>Servicios disponibles (mantener Ctrl para seleccionar varios)</label>
+                        <select id="cancha-servicios" multiple size="4">
+                            <!-- opciones añadidas dinámicamente -->
+                        </select>
+                    </div>
             </div>
             <button type="submit" class="btn btn-success">Guardar</button>
             <button type="button" class="btn btn-danger" onclick="cancelarForm('cancha')">Cancelar</button>

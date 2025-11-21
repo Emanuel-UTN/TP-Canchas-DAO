@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from dao.CanchaDAO.CanchaDAO import CanchaDAO
-from dao.CanchaDAO.TipoCanchaDAO import TipoCanchaDAO
+from dao.CanchaDAO.ServicioDAO import ServicioDAO
 from models.Cancha.Cancha import Cancha
 from models.Cancha.TipoCancha import TipoCancha
 
@@ -12,8 +12,9 @@ def obtener_canchas():
         canchas = CanchaDAO.obtener_canchas()
         return jsonify([{
             'nro_cancha': c.nro_cancha,
-            'id_tipo': c.id_tipo,
-            'costo_por_hora': c.costo_por_hora
+            'tipo': c.tipo_cancha.tipo,
+            'costo_por_hora': c.costo_hora,
+            'servicios': [s.servicio for s in c.servicios]
         } for c in canchas])
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -24,13 +25,15 @@ def agregar_cancha():
         data = request.json
         cancha = Cancha(
             nro_cancha=None,
-            tipo_cancha=TipoCancha(""),
+            tipo_cancha=TipoCancha(data.get('tipo', 'cancha')),
             costo_hora=data.get('costo_por_hora', 0)
         )
-        cancha.id_tipo = data.get('id_tipo')
-        cancha.costo_por_hora = data.get('costo_por_hora')
-        CanchaDAO.agregar_cancha(cancha)
-        return jsonify({'mensaje': 'Cancha agregada exitosamente'}), 201
+        cancha.servicios.extend(ServicioDAO.obtener_servicios_por_nombres(data.get('servicios', [])))
+    
+        # insertar cancha y obtener id generado
+        nro_cancha = CanchaDAO.agregar_cancha(cancha)
+
+        return jsonify({'mensaje': 'Cancha agregada exitosamente', 'nro_cancha': nro_cancha}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
