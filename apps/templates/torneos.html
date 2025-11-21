@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- TAB TORNEOS -->
+<div id="torneos" class="tab-content active">
+    <div class="section-header">
+        <h2 class="section-title">Torneos</h2>
+        <button class="btn btn-primary" onclick="showForm('torneo')">+ Agregar Torneo</button>
+    </div>
+    
+    <div id="form-torneo" class="form-container" style="display: none;">
+        <h3>Nuevo Torneo</h3>
+        <form onsubmit="guardarTorneo(event)">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Fecha Inicio</label>
+                    <input type="datetime-local" id="torneo-inicio" required>
+                </div>
+                <div class="form-group">
+                    <label>Fecha Fin</label>
+                    <input type="datetime-local" id="torneo-fin" required>
+                </div>
+                <div class="form-group">
+                    <label>Costo Inscripción</label>
+                    <input type="number" step="0.01" id="torneo-costo" required>
+                </div>
+                <div class="form-group">
+                    <label>Premio</label>
+                    <input type="number" step="0.01" id="torneo-premio" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <button type="button" class="btn btn-danger" onclick="cancelarForm('torneo')">Cancelar</button>
+        </form>
+    </div>
+
+    <div id="torneos-table-container">
+        <div class="loading">Cargando...</div>
+    </div>
+</div>
+{% endblock %}
