@@ -24,7 +24,7 @@ class TipoCanchaDAO:
         cursor.execute('''
             INSERT INTO TipoCancha (tipo)
             VALUES (?)
-        ''', (tipo_cancha.tipo,))
+        ''', (tipo_cancha.tipo))
         conexion.commit()
         cursor.close()
 
