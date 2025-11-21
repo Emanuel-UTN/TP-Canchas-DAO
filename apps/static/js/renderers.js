@@ -1,0 +1,177 @@
+// Renderizadores de tablas
+function renderClientes(data, container) {
+    if (!Array.isArray(data)) {
+        container.innerHTML = `<div class="empty-state">Error: ${data.error || 'Formato de datos inválido'}</div>`;
+        return;
+    }
+    if (data.length === 0) {
+        container.innerHTML = '<div class="empty-state">No hay clientes registrados</div>';
+        return;
+    }
+    let html = '<table><thead><tr><th>DNI</th><th>Nombre</th><th>Apellido</th><th>Teléfono</th><th>Acciones</th></tr></thead><tbody>';
+    data.forEach(cliente => {
+        html += `<tr>
+            <td>${cliente.dni}</td>
+            <td>${cliente.nombre}</td>
+            <td>${cliente.apellido}</td>
+            <td>${cliente.telefono}</td>
+            <td><button class="btn btn-danger" onclick="eliminarCliente(${cliente.dni})">Eliminar</button></td>
+        </tr>`;
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+function renderCanchas(data, container) {
+    if (!Array.isArray(data)) {
+        container.innerHTML = `<div class="empty-state">Error: ${data.error || 'Formato de datos inválido'}</div>`;
+        return;
+    }
+    if (data.length === 0) {
+        container.innerHTML = '<div class="empty-state">No hay canchas registradas</div>';
+        return;
+    }
+    let html = '<table><thead><tr><th>Nro. Cancha</th><th>ID Tipo</th><th>Costo por Hora</th><th>Acciones</th></tr></thead><tbody>';
+    data.forEach(cancha => {
+        html += `<tr>
+            <td>${cancha.nro_cancha}</td>
+            <td>${cancha.id_tipo}</td>
+            <td>$${cancha.costo_por_hora}</td>
+            <td><button class="btn btn-danger" onclick="eliminarCancha(${cancha.nro_cancha})">Eliminar</button></td>
+        </tr>`;
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+function renderReservas(data, container) {
+    if (!Array.isArray(data)) {
+        container.innerHTML = `<div class="empty-state">Error: ${data.error || 'Formato de datos inválido'}</div>`;
+        return;
+    }
+    if (data.length === 0) {
+        container.innerHTML = '<div class="empty-state">No hay reservas registradas</div>';
+        return;
+    }
+    let html = '<table><thead><tr><th>Nro. Reserva</th><th>Fecha Inicio</th><th>Horas</th><th>Cancha</th><th>Cliente</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>';
+    data.forEach(reserva => {
+        html += `<tr>
+            <td>${reserva.nro_reserva}</td>
+            <td>${reserva.fecha_hora_inicio}</td>
+            <td>${reserva.horas}</td>
+            <td>${reserva.nro_cancha}</td>
+            <td>${reserva.dni_cliente}</td>
+            <td>${reserva.id_estado}</td>
+            <td><button class="btn btn-danger" onclick="eliminarReserva(${reserva.nro_reserva})">Eliminar</button></td>
+        </tr>`;
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+function renderPagos(data, container) {
+    if (!Array.isArray(data)) {
+        container.innerHTML = `<div class="empty-state">Error: ${data.error || 'Formato de datos inválido'}</div>`;
+        return;
+    }
+    if (data.length === 0) {
+        container.innerHTML = '<div class="empty-state">No hay pagos registrados</div>';
+        return;
+    }
+    let html = '<table><thead><tr><th>ID Pago</th><th>Método</th><th>Fecha</th><th>Monto</th></tr></thead><tbody>';
+    data.forEach(pago => {
+        html += `<tr>
+            <td>${pago.id_pago}</td>
+            <td>${pago.id_metodo_pago}</td>
+            <td>${pago.fecha_hora}</td>
+            <td>$${pago.monto}</td>
+        </tr>`;
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+function renderTorneos(data, container) {
+    if (!Array.isArray(data)) {
+        container.innerHTML = `<div class="empty-state">Error: ${data.error || 'Formato de datos inválido'}</div>`;
+        return;
+    }
+    if (data.length === 0) {
+        container.innerHTML = '<div class="empty-state">No hay torneos registrados</div>';
+        return;
+    }
+    let html = '<table><thead><tr><th>ID</th><th>Fecha Inicio</th><th>Fecha Fin</th><th>Costo Inscripción</th><th>Premio</th><th>Acciones</th></tr></thead><tbody>';
+    data.forEach(torneo => {
+        html += `<tr>
+            <td>${torneo.id}</td>
+            <td>${torneo.fecha_inicio}</td>
+            <td>${torneo.fecha_fin}</td>
+            <td>$${torneo.costo_inscripcion}</td>
+            <td>$${torneo.premio}</td>
+            <td><button class="btn btn-danger" onclick="eliminarTorneo(${torneo.id})">Eliminar</button></td>
+        </tr>`;
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+function renderTiposCancha(data, container) {
+    if (!Array.isArray(data)) {
+        container.innerHTML = `<div class="empty-state">Error: ${data.error || 'Formato de datos inválido'}</div>`;
+        return;
+    }
+    if (data.length === 0) {
+        container.innerHTML = '<div class="empty-state">No hay tipos de cancha registrados</div>';
+        return;
+    }
+    let html = '<table><thead><tr><th>ID</th><th>Tipo</th></tr></thead><tbody>';
+    data.forEach(tipo => {
+        html += `<tr>
+            <td>${tipo.id_tipo}</td>
+            <td>${tipo.tipo}</td>
+        </tr>`;
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+function renderServicios(data, container) {
+    if (!Array.isArray(data)) {
+        container.innerHTML = `<div class="empty-state">Error: ${data.error || 'Formato de datos inválido'}</div>`;
+        return;
+    }
+    if (data.length === 0) {
+        container.innerHTML = '<div class="empty-state">No hay servicios registrados</div>';
+        return;
+    }
+    let html = '<table><thead><tr><th>ID</th><th>Servicio</th><th>Costo</th></tr></thead><tbody>';
+    data.forEach(servicio => {
+        html += `<tr>
+            <td>${servicio.id_servicio}</td>
+            <td>${servicio.servicio}</td>
+            <td>$${servicio.costo}</td>
+        </tr>`;
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+function renderMetodosPago(data, container) {
+    if (!Array.isArray(data)) {
+        container.innerHTML = `<div class="empty-state">Error: ${data.error || 'Formato de datos inválido'}</div>`;
+        return;
+    }
+    if (data.length === 0) {
+        container.innerHTML = '<div class="empty-state">No hay métodos de pago registrados</div>';
+        return;
+    }
+    let html = '<table><thead><tr><th>ID</th><th>Método</th></tr></thead><tbody>';
+    data.forEach(metodo => {
+        html += `<tr>
+            <td>${metodo.id_metodo_pago}</td>
+            <td>${metodo.metodo}</td>
+        </tr>`;
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
