@@ -1,5 +1,7 @@
 from dao.conexion import ConexionDB
 from models.Cancha.Cancha import Cancha
+from dao.CanchaDAO.TipoCanchaDAO import TipoCanchaDAO
+from dao.CanchaDAO.ServicioCanchaDAO import ServicioCanchaDAO
 
 class CanchaDAO:
     @staticmethod
@@ -47,12 +49,30 @@ class CanchaDAO:
         for fila in filas:
             cancha = Cancha(
                 nro_cancha=fila[0],
-                id_tipo=fila[1],
-                costo_por_hora=fila[2]
+                tipo_cancha=TipoCanchaDAO.obtener_tipo_cancha_por_id(fila[1]),
+                costo_hora=fila[2]
             )
+            cancha.servicios = ServicioCanchaDAO.obtener_servicios_por_cancha(cancha.nro_cancha)
             canchas.append(cancha)
         cursor.close()
         return canchas
+    
+    @staticmethod
+    def obtener_cancha_por_nro(nro_cancha: int):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute('''SELECT nro_cancha, id_tipo, costo_por_hora FROM Cancha WHERE nro_cancha = ?''', (nro_cancha,))
+        fila = cursor.fetchone()
+        cancha = None
+        if fila:
+            cancha = Cancha(
+                nro_cancha=fila[0],
+                tipo_cancha=TipoCanchaDAO.obtener_tipo_cancha_por_id(fila[1]),
+                costo_hora=fila[2]
+            )
+            cancha.servicios = ServicioCanchaDAO.obtener_servicios_por_cancha(cancha.nro_cancha)
+        cursor.close()
+        return cancha
 
     @staticmethod
     def modificar_cancha(cancha: Cancha):
@@ -62,7 +82,7 @@ class CanchaDAO:
             UPDATE Cancha
             SET id_tipo = ?, costo_por_hora = ?
             WHERE nro_cancha = ?
-        ''', (cancha.id_tipo, cancha.costo_por_hora, cancha.nro_cancha))
+        ''', (cancha.tipo_cancha.id_tipo, cancha.costo_hora, cancha.nro_cancha))
         conexion.commit()
         cursor.close()
 

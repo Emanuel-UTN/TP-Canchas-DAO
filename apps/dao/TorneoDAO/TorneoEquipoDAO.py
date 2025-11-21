@@ -54,6 +54,22 @@ class TorneoEquipoDAO:
             torneos_equipos.append(torneo_equipo)
         cursor.close()
         return torneos_equipos
+    
+    @staticmethod
+    def obtener_tabla_por_torneo(id_torneo: int):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        tabla = []
+        cursor.execute('''SELECT id_equipo, puntos FROM TorneoEquipo WHERE id_torneo = ? ORDER BY puntos DESC''', (id_torneo,))
+        filas = cursor.fetchall()
+        for fila in filas:
+            equipo_puntos = {
+                'id_equipo': fila[0],
+                'puntos': fila[1]
+            }
+            tabla.append(equipo_puntos)
+        cursor.close()
+        return tabla
 
     @staticmethod
     def modificar_torneo_equipo(id_torneo: int, id_equipo: int, puntos: int):

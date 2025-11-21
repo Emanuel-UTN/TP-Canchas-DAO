@@ -1,4 +1,5 @@
 from dao.conexion import ConexionDB
+from dao.CanchaDAO.ServicioDAO import ServicioDAO
 
 class ServicioCanchaDAO:
 
@@ -54,3 +55,14 @@ class ServicioCanchaDAO:
         cursor.close()
         return servicios_canchas
     
+    @staticmethod
+    def obtener_servicios_por_cancha(nro_cancha: int):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        servicios = []
+        cursor.execute('''SELECT id_servicio FROM ServicioCancha WHERE nro_cancha = ?''', (nro_cancha,))
+        filas = cursor.fetchall()
+        for fila in filas:
+            servicios.append(ServicioDAO.obtener_servicio_por_id(fila[0]))
+        cursor.close()
+        return servicios

@@ -1,5 +1,9 @@
 from dao.conexion import ConexionDB
 from models.Reserva.Reserva import Reserva
+from dao.CanchaDAO.CanchaDAO import CanchaDAO
+from dao.ClienteDAO.ClienteDAO import ClienteDAO
+from dao.PagoDAO.PagoDAO import PagoDAO
+from dao.ReservaDAO.EstadoReservaDAO import EstadoReservaDAO
 
 class ReservaDAO:
     @staticmethod
@@ -57,11 +61,11 @@ class ReservaDAO:
                 nro_reserva=fila[0],
                 fecha_hora_inicio=fila[1],
                 horas=fila[2],
-                nro_cancha=fila[3],
-                dni_cliente=fila[4],
-                id_pago=fila[5],
-                id_estado=fila[6]
+                cancha=CanchaDAO.obtener_cancha_por_numero(fila[3]),
+                cliente=ClienteDAO.obtener_cliente_por_dni(fila[4]),
+                pago=PagoDAO.obtener_pago_por_id(fila[5])
             )
+            reserva.estado = EstadoReservaDAO.obtener_estado_reserva_por_id(fila[6])
             reservas.append(reserva)
         cursor.close()
         return reservas
