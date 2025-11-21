@@ -11,8 +11,8 @@ class ServicioDAO:
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Servicio (
                 id_servicio INTEGER PRIMARY KEY AUTOINCREMENT,
-                servicio TEXT,
-                costo REAL
+                servicio TEXT NOT NULL CHECK(length(trim(servicio)) >= 2 AND length(trim(servicio)) <= 100),
+                costo REAL NOT NULL CHECK(costo > 0)
                 )
             ''')
         # índice único para garantizar que no se repita el nombre

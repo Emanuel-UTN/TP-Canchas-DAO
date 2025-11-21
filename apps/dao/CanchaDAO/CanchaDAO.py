@@ -13,8 +13,8 @@ class CanchaDAO:
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Cancha (
                 nro_cancha INTEGER PRIMARY KEY AUTOINCREMENT,
-                id_tipo INTEGER,
-                costo_por_hora REAL,
+                id_tipo INTEGER NOT NULL,
+                costo_por_hora REAL NOT NULL CHECK(costo_por_hora > 0),
                 FOREIGN KEY (id_tipo) REFERENCES TipoCancha(id_tipo)
                 )
             ''')
