@@ -14,27 +14,23 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>Fecha y Hora Inicio</label>
-                    <input type="datetime-local" id="reserva-fecha" required>
+                    <input type="datetime-local" id="reserva-fecha" step="3600" required>
                 </div>
                 <div class="form-group">
                     <label>Horas</label>
                     <input type="number" id="reserva-horas" required>
                 </div>
                 <div class="form-group">
-                    <label>Nro. Cancha</label>
-                    <input type="number" id="reserva-cancha" required>
+                    <label>Cancha</label>
+                    <select id="reserva-cancha" required>
+                        <option value="" disabled selected>Seleccionar cancha</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>DNI Cliente</label>
-                    <input type="number" id="reserva-cliente" required>
-                </div>
-                <div class="form-group">
-                    <label>ID Pago</label>
-                    <input type="number" id="reserva-pago">
-                </div>
-                <div class="form-group">
-                    <label>ID Estado</label>
-                    <input type="number" id="reserva-estado" value="1">
+                    <label>Cliente (buscar por nombre)</label>
+                    <input type="text" id="reserva-cliente-nombre" list="clientes-list" placeholder="Escribe nombre o apellido" autocomplete="off">
+                    <datalist id="clientes-list"></datalist>
+                    <input type="hidden" id="reserva-cliente" required>
                 </div>
             </div>
             <button type="submit" class="btn btn-success">Guardar</button>

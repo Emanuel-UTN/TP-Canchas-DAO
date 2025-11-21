@@ -53,7 +53,11 @@ const Validaciones = {
         const fechaObj = new Date(fecha);
         if (isNaN(fechaObj.getTime())) {
             return `${nombreCampo} no es válida`;
+        }// validar que los minutos sean cero
+        else if (fechaObj.getMinutes() !== 0) {
+            return `${nombreCampo} debe tener los minutos en 00`;
         }
+        
         return null;
     },
     
@@ -76,7 +80,7 @@ const Validaciones = {
         const fechaObj = new Date(fecha);
         const ahora = new Date();
         const fechaMaxima = new Date();
-        fechaMaxima.setMonth(fechaMaxima.getMonth() + mesesMaximos);
+        fechaMaxima.setMonth(ahora.getMonth() + mesesMaximos);
         
         if (fechaObj > fechaMaxima) {
             return `${nombreCampo} no puede ser superior a ${mesesMaximos} meses desde hoy`;
