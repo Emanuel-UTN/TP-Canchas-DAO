@@ -38,7 +38,41 @@ crear_tablas()
 
 @app.route('/')
 def index():
+    """Dashboard mínimo: enlaces a vistas modulares sin duplicar formularios."""
     return render_template('index.html')
+
+# Rutas HTML modulares (evitan duplicación en index)
+@app.route('/clientes')
+def page_clientes():
+    return render_template('clientes.html', active_tab='clientes')
+
+@app.route('/canchas')
+def page_canchas():
+    return render_template('canchas.html', active_tab='canchas')
+
+@app.route('/reservas')
+def page_reservas():
+    return render_template('reservas.html', active_tab='reservas')
+
+@app.route('/pagos')
+def page_pagos():
+    return render_template('pagos.html', active_tab='pagos')
+
+@app.route('/torneos')
+def page_torneos():
+    return render_template('torneos.html', active_tab='torneos')
+
+@app.route('/tipos-cancha')
+def page_tipos_cancha():
+    return render_template('tipos-cancha.html', active_tab='tipos-cancha')
+
+@app.route('/servicios')
+def page_servicios():
+    return render_template('servicios.html', active_tab='servicios')
+
+@app.route('/metodos-pago')
+def page_metodos_pago():
+    return render_template('metodos-pago.html', active_tab='metodos-pago')
 
 
 # Registrar blueprints (importar después de crear app y de insertar el path)
