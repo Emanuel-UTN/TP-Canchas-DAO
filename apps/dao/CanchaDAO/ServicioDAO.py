@@ -15,6 +15,8 @@ class ServicioDAO:
                 costo REAL
                 )
             ''')
+        # índice único para garantizar que no se repita el nombre
+        cursor.execute('''CREATE UNIQUE INDEX IF NOT EXISTS idx_servicio_unico ON Servicio(servicio);''')
 
         conexion.commit()
         cursor.close()
@@ -53,6 +55,15 @@ class ServicioDAO:
             servicios.append(servicio)
         cursor.close()
         return servicios
+
+    @staticmethod
+    def obtener_servicio_por_nombre(nombre: str):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute('''SELECT servicio, costo FROM Servicio WHERE servicio = ?''', (nombre,))
+        fila = cursor.fetchone()
+        cursor.close()
+        return Servicio(servicio=fila[0], costo=fila[1]) if fila else None
         
     @staticmethod
     def obtener_servicio_por_id(id_servicio: int):
@@ -99,13 +110,17 @@ class ServicioDAO:
         return servicios
 
     @staticmethod
-    def modificar_servicio(servicio: Servicio):
+    def modificar_servicio_por_nombre(nombre_actual: str, nuevo_nombre: str, nuevo_costo: float):
         conexion = ConexionDB().obtener_conexion()
         cursor = conexion.cursor()
-        cursor.execute('''
-            UPDATE Servicio
-            SET servicio = ?, costo = ?
-            WHERE id_servicio = ?
-        ''', (servicio.servicio, servicio.costo, servicio.id_servicio))
+        cursor.execute('''UPDATE Servicio SET servicio = ?, costo = ? WHERE servicio = ?''', (nuevo_nombre, nuevo_costo, nombre_actual))
+        conexion.commit()
+        cursor.close()
+
+    @staticmethod
+    def eliminar_servicio_por_nombre(nombre_servicio: str):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute('''DELETE FROM Servicio WHERE servicio = ?''', (nombre_servicio,))
         conexion.commit()
         cursor.close()
