@@ -151,10 +151,15 @@ function renderTiposCancha(data, container) {
         container.innerHTML = '<div class="empty-state">No hay tipos de cancha registrados</div>';
         return;
     }
-    let html = '<table><thead><tr><th>Tipo</th></tr></thead><tbody>';
+    let html = '<table><thead><tr><th>Tipo</th><th>Acciones</th></tr></thead><tbody>';
     data.forEach(tipo => {
+        const nombre = tipo.tipo;
         html += `<tr>
-            <td>${tipo.tipo}</td>
+            <td>${nombre}</td>
+            <td>
+                <button class="btn btn-primary" onclick="editarTipoCancha('${encodeURIComponent(nombre)}')">Editar</button>
+                <button class="btn btn-danger" onclick="eliminarTipoCancha('${encodeURIComponent(nombre)}')">Eliminar</button>
+            </td>
         </tr>`;
     });
     html += '</tbody></table>';
@@ -170,11 +175,16 @@ function renderServicios(data, container) {
         container.innerHTML = '<div class="empty-state">No hay servicios registrados</div>';
         return;
     }
-    let html = '<table><thead><tr><th>Servicio</th><th>Costo</th></tr></thead><tbody>';
+    let html = '<table><thead><tr><th>Servicio</th><th>Costo</th><th>Acciones</th></tr></thead><tbody>';
     data.forEach(servicio => {
+        const nombre = servicio.servicio;
         html += `<tr>
-            <td>${servicio.servicio}</td>
+            <td>${nombre}</td>
             <td>$${servicio.costo}</td>
+            <td>
+                <button class="btn btn-primary" onclick="editarServicio('${encodeURIComponent(nombre)}')">Editar</button>
+                <button class="btn btn-danger" onclick="eliminarServicio('${encodeURIComponent(nombre)}')">Eliminar</button>
+            </td>
         </tr>`;
     });
     html += '</tbody></table>';
