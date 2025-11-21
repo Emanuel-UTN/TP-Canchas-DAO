@@ -34,6 +34,28 @@
         </form>
     </div>
 
+    <div id="modal-editar" class="modal" style="display:none;">
+    <div class="modal-content">
+        <h3>Editar Cliente</h3>
+
+        <label>DNI</label>
+        <input type="number" id="edit-dni" readonly>
+
+        <label>Nombre</label>
+        <input type="text" id="edit-nombre">
+
+        <label>Apellido</label>
+        <input type="text" id="edit-apellido">
+
+        <label>Teléfono</label>
+        <input type="text" id="edit-telefono">
+        
+        <button class="btn btn-success" onclick="guardarCambiosCliente()">Guardar Cambios</button>
+        <button class="btn btn-danger" onclick="document.getElementById('modal-editar').style.display='none'">Cancelar</button>
+    </div>
+</div>
+
+
     <div id="clientes-table-container">
         <div class="loading">Cargando...</div>
     </div>

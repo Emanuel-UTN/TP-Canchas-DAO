@@ -15,7 +15,10 @@ function renderClientes(data, container) {
             <td>${cliente.nombre}</td>
             <td>${cliente.apellido}</td>
             <td>${cliente.telefono}</td>
-            <td><button class="btn btn-danger" onclick="eliminarCliente(${cliente.dni})">Eliminar</button></td>
+            <td>
+                <button class="btn btn-primary" onclick="editarCliente(${cliente.dni})">Editar</button>
+                <button class="btn btn-danger" onclick="eliminarCliente(${cliente.dni})">Eliminar</button>
+            </td>
         </tr>`;
     });
     html += '</tbody></table>';
@@ -50,7 +53,10 @@ function renderCanchas(data, container) {
             <td>${cancha.tipo}</td>
             <td>${serviciosText}</td>
             <td>$${cancha.costo_por_hora}</td>
-            <td><button class="btn btn-danger" onclick="eliminarCancha(${cancha.nro_cancha})">Eliminar</button></td>
+            <td>
+                <button class="btn btn-primary" onclick="editarCancha(${cancha.nro_cancha})">Editar</button>
+                <button class="btn btn-danger" onclick="eliminarCancha(${cancha.nro_cancha})">Eliminar</button>
+            </td>
         </tr>`;
     });
     html += '</tbody></table>';
