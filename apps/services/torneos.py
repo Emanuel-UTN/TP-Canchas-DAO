@@ -30,8 +30,13 @@ def agregar_torneo():
         )
         TorneoDAO.agregar_torneo(torneo)
         return jsonify({'mensaje': 'Torneo agregado exitosamente'}), 201
-    except Exception as e:
+    except ValueError as e:
+        # Error de validación del modelo
         return jsonify({'error': str(e)}), 400
+    except KeyError as e:
+        return jsonify({'error': f'Campo requerido faltante: {str(e)}'}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @bp_torneos.route('/<int:id>', methods=['PUT'])
 def modificar_torneo(id):
@@ -46,8 +51,13 @@ def modificar_torneo(id):
         torneo.id = id
         TorneoDAO.modificar_torneo(torneo)
         return jsonify({'mensaje': 'Torneo modificado exitosamente'})
-    except Exception as e:
+    except ValueError as e:
+        # Error de validación del modelo
         return jsonify({'error': str(e)}), 400
+    except KeyError as e:
+        return jsonify({'error': f'Campo requerido faltante: {str(e)}'}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @bp_torneos.route('/<int:id>', methods=['DELETE'])
 def eliminar_torneo(id):

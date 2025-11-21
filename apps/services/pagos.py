@@ -33,5 +33,10 @@ def agregar_pago():
         pago.id_pago = None
         PagoDAO.agregar_pago(pago)
         return jsonify({'mensaje': 'Pago agregado exitosamente'}), 201
-    except Exception as e:
+    except ValueError as e:
+        # Error de validación del modelo
         return jsonify({'error': str(e)}), 400
+    except KeyError as e:
+        return jsonify({'error': f'Campo requerido faltante: {str(e)}'}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

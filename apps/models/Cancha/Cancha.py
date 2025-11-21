@@ -5,8 +5,21 @@ class Cancha:
     def __init__(self, nro_cancha : int, tipo_cancha : TipoCancha, costo_hora : float):
         self.nro_cancha = nro_cancha
         self.tipo_cancha = tipo_cancha
-        self.costo_hora = costo_hora
+        self.costo_hora = self._validar_costo_hora(costo_hora)
         self.servicios = []
+    
+    @staticmethod
+    def _validar_costo_hora(costo_hora):
+        """Valida el costo por hora y retorna el valor si es válido."""
+        try:
+            costo = float(costo_hora)
+        except (ValueError, TypeError):
+            raise ValueError("El costo por hora debe ser un número válido")
+        
+        if costo <= 0:
+            raise ValueError("El costo por hora debe ser un número positivo")
+        
+        return costo
 
     def agregar_servicio(self, servicio : Servicio):
         self.servicios.append(servicio)

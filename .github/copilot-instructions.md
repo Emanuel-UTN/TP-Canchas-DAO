@@ -1,7 +1,7 @@
 # Copilot Instructions - TP Canchas DAO
 
 ## Architecture Overview
-This is a Flask-based sports court management system using a **3-layer DAO pattern** with SQLite. The project follows a strict separation: Models (domain objects) → DAO (data access) → Services (Flask blueprints) → Frontend (modular JS/HTML).
+This is a Flask-based sports court management system using a **3-layer DAO pattern** with SQLite. The project follows a strict separation: Models (domain objects) → DAO (data access) → Services (Flask blueprints) → Frontend (modular JS/HTML). Mantener siempre bajo acopplamiennto y alta cohesión entre objetos y tambien entre capas.
 
 ## Key Patterns & Conventions
 

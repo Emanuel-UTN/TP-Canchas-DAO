@@ -14,7 +14,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>DNI</label>
-                    <input type="number" id="cliente-dni" required>
+                    <input type="number" id="cliente-dni" inputmode="numeric" pattern="[0-9]{7,8}" maxlength="8" required>
                 </div>
                 <div class="form-group">
                     <label>Nombre</label>
@@ -39,7 +39,7 @@
         <h3>Editar Cliente</h3>
 
         <label for="edit-dni">DNI</label>
-        <input type="number" id="edit-dni" readonly>
+        <input type="text" id="edit-dni" readonly>
 
         <label for="edit-nombre">Nombre</label>
         <input type="text" id="edit-nombre">

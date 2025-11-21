@@ -40,13 +40,6 @@ def agregar_reserva():
     try:
         data = request.json
         
-        # Validar que la reserva no sea más de 3 meses en el futuro
-        fecha_reserva = datetime.fromisoformat(data['fecha_hora_inicio'].replace('Z', '+00:00'))
-        fecha_maxima = datetime.now() + timedelta(days=90)  # 3 meses = 90 días aproximadamente
-        
-        if fecha_reserva > fecha_maxima:
-            return jsonify({'error': 'No se pueden hacer reservas con más de 3 meses de anticipación'}), 400
-        
         cliente = ClienteDAO.obtener_cliente_por_dni(data['dni_cliente'])
         if not cliente:
             return jsonify({'error': 'Cliente no encontrado'}), 404
@@ -55,6 +48,7 @@ def agregar_reserva():
         if not cancha:
             return jsonify({'error': 'Cancha no encontrada'}), 404
         
+        # La validación de fecha y horas se hace en el constructor de Reserva
         reserva = Reserva(
             nro_reserva=None,
             cliente=cliente,
@@ -66,24 +60,24 @@ def agregar_reserva():
         ReservaDAO.agregar_reserva(reserva)
         
         return jsonify({'mensaje': 'Reserva agregada exitosamente'}), 201
-    except Exception as e:
+    except ValueError as e:
+        # Error de validación del modelo
         return jsonify({'error': str(e)}), 400
+    except KeyError as e:
+        return jsonify({'error': f'Campo requerido faltante: {str(e)}'}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @bp_reservas.route('/<int:nro_reserva>', methods=['PUT'])
 def modificar_reserva(nro_reserva):
     try:
         data = request.json
         
-        # Validar que la reserva no sea más de 3 meses en el futuro
-        fecha_reserva = datetime.fromisoformat(data['fecha_hora_inicio'].replace('Z', '+00:00'))
-        fecha_maxima = datetime.now() + timedelta(days=90)  # 3 meses = 90 días aproximadamente
-        
-        if fecha_reserva > fecha_maxima:
-            return jsonify({'error': 'No se pueden hacer reservas con más de 3 meses de anticipación'}), 400
-        
         cliente_placeholder = Cliente(0, "", "", "")
         cancha_placeholder = Cancha(0, TipoCancha(""), 0)
         pago_placeholder = Pago(MetodoPago(""), "", 0)
+        
+        # La validación de fecha y horas se hace en el constructor de Reserva
         reserva = Reserva(
             nro_reserva=nro_reserva,
             cliente=cliente_placeholder,
@@ -98,8 +92,13 @@ def modificar_reserva(nro_reserva):
         reserva.id_estado = data.get('id_estado')
         ReservaDAO.modificar_reserva(reserva)
         return jsonify({'mensaje': 'Reserva modificada exitosamente'})
-    except Exception as e:
+    except ValueError as e:
+        # Error de validación del modelo
         return jsonify({'error': str(e)}), 400
+    except KeyError as e:
+        return jsonify({'error': f'Campo requerido faltante: {str(e)}'}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @bp_reservas.route('/<int:nro_reserva>', methods=['DELETE'])
 def eliminar_reserva(nro_reserva):

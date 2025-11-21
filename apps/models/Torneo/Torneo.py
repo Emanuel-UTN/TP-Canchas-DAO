@@ -1,14 +1,82 @@
 from models.Torneo.Equipo import Equipo
 from models.Torneo.Partido import Partido
+from datetime import datetime
 
 class Torneo:
     def __init__(self, fecha_inicio, fecha_fin, costo_inscripcion, premio):
-        self.fecha_inicio = fecha_inicio
-        self.fecha_fin = fecha_fin
-        self.costo_inscripcion = costo_inscripcion
-        self.premio = premio
+        self.fecha_inicio = self._validar_fecha_inicio(fecha_inicio)
+        self.fecha_fin = self._validar_fecha_fin(fecha_fin, fecha_inicio)
+        self.costo_inscripcion = self._validar_costo_inscripcion(costo_inscripcion)
+        self.premio = self._validar_premio(premio)
         self.tabla = []
         self.partidos = []
+    
+    @staticmethod
+    def _validar_fecha_inicio(fecha_inicio):
+        """Valida la fecha de inicio del torneo."""
+        if not fecha_inicio:
+            raise ValueError("La fecha de inicio es requerida")
+        
+        try:
+            if isinstance(fecha_inicio, str):
+                inicio_obj = datetime.fromisoformat(fecha_inicio.replace('Z', '+00:00'))
+            else:
+                inicio_obj = fecha_inicio
+        except (ValueError, AttributeError):
+            raise ValueError("La fecha de inicio no es válida")
+        
+        ahora = datetime.now()
+        if inicio_obj < ahora:
+            raise ValueError("La fecha de inicio debe ser una fecha futura")
+        
+        return fecha_inicio
+    
+    @staticmethod
+    def _validar_fecha_fin(fecha_fin, fecha_inicio):
+        """Valida la fecha de fin del torneo."""
+        if not fecha_fin:
+            raise ValueError("La fecha de fin es requerida")
+        
+        try:
+            if isinstance(fecha_inicio, str) and isinstance(fecha_fin, str):
+                inicio = datetime.fromisoformat(fecha_inicio.replace('Z', '+00:00'))
+                fin = datetime.fromisoformat(fecha_fin.replace('Z', '+00:00'))
+            else:
+                inicio = fecha_inicio
+                fin = fecha_fin
+        except (ValueError, AttributeError):
+            raise ValueError("La fecha de fin no es válida")
+        
+        if fin <= inicio:
+            raise ValueError("La fecha de fin debe ser posterior a la fecha de inicio")
+        
+        return fecha_fin
+    
+    @staticmethod
+    def _validar_costo_inscripcion(costo_inscripcion):
+        """Valida el costo de inscripción del torneo."""
+        try:
+            costo = float(costo_inscripcion)
+        except (ValueError, TypeError):
+            raise ValueError("El costo de inscripción debe ser un número válido")
+        
+        if costo <= 0:
+            raise ValueError("El costo de inscripción debe ser un número positivo")
+        
+        return costo
+    
+    @staticmethod
+    def _validar_premio(premio):
+        """Valida el premio del torneo."""
+        try:
+            premio_num = float(premio)
+        except (ValueError, TypeError):
+            raise ValueError("El premio debe ser un número válido")
+        
+        if premio_num <= 0:
+            raise ValueError("El premio debe ser un número positivo")
+        
+        return premio_num
 
     def agregar_equipo(self, equipo: Equipo):
         self.tabla.append({equipo: {"puntos": 0, "goles_a_favor": 0, "goles_en_contra": 0}})
