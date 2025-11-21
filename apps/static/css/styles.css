@@ -37,6 +37,7 @@ h1 {
     background: rgba(255, 255, 255, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.3);
     color: white;
+    text-decoration: none;
     cursor: pointer;
     border-radius: 8px;
     font-size: 16px;
@@ -47,6 +48,13 @@ h1 {
 .tab-button:hover {
     background: rgba(255, 255, 255, 0.3);
     transform: translateY(-2px);
+}
+
+/* Asegurar que los enlaces de las pestañas no muestren subrayado en todos los estados */
+.tab-button:link,
+.tab-button:visited,
+.tab-button:active {
+    text-decoration: none;
 }
 
 .tab-button.active {
