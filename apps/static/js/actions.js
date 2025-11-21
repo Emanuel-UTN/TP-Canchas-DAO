@@ -37,25 +37,44 @@ async function editarCliente(dni) {
     }
 }
 
-function guardarCambiosCliente() {
+async function guardarCambiosCliente() {
     const dni = document.getElementById("edit-dni").value;
+    const nombre = document.getElementById("edit-nombre").value;
+    const apellido = document.getElementById("edit-apellido").value;
+    const telefono = document.getElementById("edit-telefono").value;
+
+    const errores = [];
+    const errorNombre = Validaciones.esTextoValido(nombre, 'Nombre');
+    if (errorNombre) errores.push(errorNombre);
+    const errorApellido = Validaciones.esTextoValido(apellido, 'Apellido');
+    if (errorApellido) errores.push(errorApellido);
+    const errorTelefono = Validaciones.esTelefonoValido(telefono);
+    if (errorTelefono) errores.push(errorTelefono);
+
+    if (Validaciones.mostrarErrores(errores)) return;
 
     const data = {
-        nombre: document.getElementById("edit-nombre").value,
-        apellido: document.getElementById("edit-apellido").value,
-        telefono: document.getElementById("edit-telefono").value,
+        nombre: nombre,
+        apellido: apellido,
+        telefono: telefono,
     };
 
-    fetch(`/api/clientes/${dni}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(() => {
+    try {
+        const response = await fetch(`/api/clientes/${dni}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+        if (!response.ok) {
+            const error = await response.json();
+            alert('Error: ' + error.error);
+            return;
+        }
         document.getElementById("modal-editar").style.display = "none";
         loadTabData('clientes');
-    });
+    } catch (error) {
+        alert('Error: ' + error.message);
+    }
 }
 
 async function eliminarCancha(nro) {
