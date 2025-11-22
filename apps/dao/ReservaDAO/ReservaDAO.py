@@ -68,9 +68,19 @@ class ReservaDAO:
     def obtener_reserva_por_cancha_y_fecha(nro_cancha: int, fecha_hora_inicio: datetime, fecha_hora_fin: datetime):
         conexion = ConexionDB().obtener_conexion()
         cursor = conexion.cursor()
-        fecha_dia_inicio = fecha_hora_inicio - timedelta(hours=5)  # margen para reservas que empiezan antes pero terminan dentro del rango
-        fecha_dia_fin = fecha_hora_fin  # margen para reservas que empiezan dentro pero terminan después del rango
-        cursor.execute('''SELECT nro_reserva, fecha_hora_inicio, horas, nro_cancha, dni_cliente, id_pago, id_estado FROM Reserva WHERE nro_cancha = ? AND fecha_hora_inicio BETWEEN ? AND ?''', (nro_cancha, fecha_dia_inicio, fecha_dia_fin))
+        # Incluir margen: buscar reservas que empiecen hasta 5 horas antes
+        fecha_dia_inicio = fecha_hora_inicio - timedelta(hours=5)
+        # Convertir las fechas al mismo formato ISO usado al guardar en la BD
+        # (guardamos como 'YYYY-MM-DDTHH:MM:SS'), así la comparación BETWEEN funciona correctamente.
+        fecha_dia_inicio_str = fecha_dia_inicio.strftime('%Y-%m-%dT%H:%M:%S')
+        fecha_dia_fin_str = fecha_hora_fin.strftime('%Y-%m-%dT%H:%M:%S')
+        cursor.execute('''
+                       SELECT nro_reserva, fecha_hora_inicio, horas, nro_cancha, dni_cliente, id_pago, id_estado 
+                       FROM Reserva 
+                       WHERE 
+                            nro_cancha = ? 
+                            AND fecha_hora_inicio BETWEEN ? AND ?''', 
+                        (nro_cancha, fecha_dia_inicio_str, fecha_dia_fin_str))
         fila = cursor.fetchall()
         cursor.close()
         reservas = []
