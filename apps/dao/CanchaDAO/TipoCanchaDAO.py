@@ -10,7 +10,7 @@ class TipoCanchaDAO:
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS TipoCancha (
                 id_tipo INTEGER PRIMARY KEY AUTOINCREMENT,
-                tipo TEXT
+                tipo TEXT NOT NULL CHECK(length(trim(tipo)) >= 2 AND length(trim(tipo)) <= 50)
                 )
             ''')
         # índice único para garantizar que no se repita el nombre

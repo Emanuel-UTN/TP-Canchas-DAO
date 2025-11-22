@@ -2,12 +2,13 @@ from models.Cancha.Cancha import Cancha
 from models.Cliente.Cliente import Cliente
 from models.Pago.Pago import Pago
 from models.Reserva.EstadoReserva import EstadoReserva
+from models.Validaciones import Validaciones
 
 class Reserva:
     def __init__(self, nro_reserva, cliente: Cliente, cancha: Cancha, fecha_hora_inicio, horas: int, pago: Pago):
         self.nro_reserva = nro_reserva
-        self.fecha_hora_inicio = fecha_hora_inicio
-        self.horas = horas
+        self.fecha_hora_inicio = Validaciones.esFechaValida(fecha_hora_inicio, "Fecha y hora de inicio")
+        self.horas = Validaciones.esEnteroPositivo(horas, "Cantidad de horas", max_value=6)
         self.cliente = cliente
         self.cancha = cancha
         self.estado = EstadoReserva.PENDIENTE

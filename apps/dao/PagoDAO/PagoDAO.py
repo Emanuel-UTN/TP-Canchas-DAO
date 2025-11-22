@@ -11,9 +11,9 @@ class PagoDAO:
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Pago (
                 id_pago INTEGER PRIMARY KEY AUTOINCREMENT,
-                id_metodo_pago INTEGER,
-                fecha_hora DATETIME,
-                monto REAL,
+                id_metodo_pago INTEGER NOT NULL,
+                fecha_hora DATETIME NOT NULL,
+                monto REAL NOT NULL CHECK(monto > 0),
                 FOREIGN KEY (id_metodo_pago) REFERENCES MetodoPago(id_metodo_pago)
                 )
             ''')

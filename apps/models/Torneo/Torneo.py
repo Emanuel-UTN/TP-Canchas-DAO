@@ -1,12 +1,13 @@
 from models.Torneo.Equipo import Equipo
 from models.Torneo.Partido import Partido
+from models.Validaciones import Validaciones
 
 class Torneo:
     def __init__(self, fecha_inicio, fecha_fin, costo_inscripcion, premio):
-        self.fecha_inicio = fecha_inicio
-        self.fecha_fin = fecha_fin
-        self.costo_inscripcion = costo_inscripcion
-        self.premio = premio
+        self.fecha_inicio = Validaciones.esFechaFutura(fecha_inicio, "Fecha de inicio")
+        self.fecha_fin = Validaciones.esFechaPosterior(fecha_inicio, fecha_fin)
+        self.costo_inscripcion = Validaciones.esNumeroPositivo(costo_inscripcion, "Costo de inscripción")
+        self.premio = Validaciones.esNumeroPositivo(premio, "Premio")
         self.tabla = []
         self.partidos = []
 

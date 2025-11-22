@@ -27,10 +27,15 @@ def agregar_servicio():
         )
         ServicioDAO.agregar_servicio(servicio)
         return jsonify({'mensaje': 'Servicio agregado exitosamente'}), 201
+    except ValueError as e:
+        # Error de validación del modelo
+        return jsonify({'error': str(e)}), 400
     except sqlite3.IntegrityError:
         return jsonify({'error': 'El servicio ya existe'}), 409
+    except KeyError as e:
+        return jsonify({'error': f'Campo requerido faltante: {str(e)}'}), 400
     except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        return jsonify({'error': str(e)}), 500
 
 @bp_servicios.route('/<string:nombre_servicio>', methods=['GET'])
 def obtener_servicio(nombre_servicio):

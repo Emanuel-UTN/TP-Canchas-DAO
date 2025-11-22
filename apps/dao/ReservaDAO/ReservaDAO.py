@@ -15,16 +15,16 @@ class ReservaDAO:
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Reserva (
                 nro_reserva INTEGER PRIMARY KEY AUTOINCREMENT,
-                fecha_hora_inicio DATETIME,
-                horas INTEGER,
-                nro_cancha INTEGER,
-                dni_cliente INTEGER,
+                fecha_hora_inicio DATETIME NOT NULL,
+                horas INTEGER NOT NULL CHECK(horas > 0 AND horas <= 6),
+                nro_cancha INTEGER NOT NULL,
+                dni_cliente INTEGER NOT NULL,
                 id_pago INTEGER,
-                id_estado INTEGER,
+                id_estado INTEGER NOT NULL,
                 
-                FOREIGN KEY (nro_cancha) REFERENCES Cancha(nro_cancha)
-                FOREIGN KEY (dni_cliente) REFERENCES Cliente(dni_cliente)
-                FOREIGN KEY (id_pago) REFERENCES Pago(id_pago)
+                FOREIGN KEY (nro_cancha) REFERENCES Cancha(nro_cancha),
+                FOREIGN KEY (dni_cliente) REFERENCES Cliente(dni_cliente),
+                FOREIGN KEY (id_pago) REFERENCES Pago(id_pago),
                 FOREIGN KEY (id_estado) REFERENCES EstadoReserva(id_estado)
                 )
         ''')
