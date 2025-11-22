@@ -11,7 +11,7 @@
     <div id="form-cancha" class="form-container" style="display: none;">
         <h3>Nueva Cancha</h3>
         <form onsubmit="guardarCancha(event)">
-            <div class="form-row">
+            <div class="form-row horizontal">
                 <div class="form-group">
                     <label>Tipo de Cancha</label>
                     <select id="cancha-tipo" required>
@@ -22,16 +22,42 @@
                     <label>Costo por Hora</label>
                     <input type="number" step="1" id="cancha-costo" required>
                 </div>
-                    <div class="form-group">
-                        <label>Servicios disponibles (mantener Ctrl para seleccionar varios)</label>
-                        <select id="cancha-servicios" multiple size="4">
-                            <!-- opciones añadidas dinámicamente -->
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label>Servicios disponibles (mantener Ctrl para seleccionar varios)</label>
+                    <select id="cancha-servicios" multiple size="4">
+                        <!-- opciones añadidas dinámicamente -->
+                    </select>
+                </div>
             </div>
             <button type="submit" class="btn btn-success">Guardar</button>
             <button type="button" class="btn btn-danger" onclick="cancelarForm('cancha')">Cancelar</button>
         </form>
+    </div>
+
+    <div id="modal-editar-cancha" class="modal" style="display:none;">
+        <div class="modal-content form-container">
+            <h3>Editar Cancha</h3>
+
+            <div class="form-row horizontal">
+                <div class="form-group">
+                    <label for="edit-nro">Nro Cancha</label>
+                    <input type="number" id="edit-nro" readonly aria-readonly="true" tabindex="-1">
+                </div>
+                <div class="form-group">
+                    <label>Costo por Hora</label>
+                    <input type="number" step="1" id="edit-cancha-costo" required>
+                </div>
+                <div class="form-group">
+                    <label>Servicios disponibles (mantener Ctrl para seleccionar varios)</label>
+                    <select id="edit-cancha-servicios" multiple size="4">
+                        <!-- opciones añadidas dinámicamente -->
+                    </select>
+                </div>
+            </div>
+            
+            <button class="btn btn-success" onclick="guardarCambiosCancha()">Guardar Cambios</button>
+            <button class="btn btn-danger" onclick="cerrarModalEditarCancha()">Cancelar</button>
+        </div>
     </div>
 
     <div id="canchas-table-container">

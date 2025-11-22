@@ -244,6 +244,19 @@ tr:hover {
     gap: 20px;
 }
 
+/* Utility: fila horizontal para formularios (usa flex) */
+.form-row.horizontal {
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+.form-row.horizontal .form-group {
+    /* permitir que cada grupo crezca y tenga un ancho mínimo */
+    flex: 1 1 280px;
+    margin-bottom: 0;
+}
+
 .actions {
     display: flex;
     gap: 15px;

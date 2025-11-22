@@ -54,6 +54,7 @@ function renderCanchas(data, container) {
             <td>${serviciosText}</td>
             <td>$${cancha.costo_por_hora}</td>
             <td>
+                <button class="btn btn-primary" onclick="editarCancha(${cancha.nro_cancha})">Editar</button>
                 <button class="btn btn-danger" onclick="eliminarCancha(${cancha.nro_cancha})">Eliminar</button>
             </td>
         </tr>`;

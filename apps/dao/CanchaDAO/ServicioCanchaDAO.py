@@ -66,3 +66,21 @@ class ServicioCanchaDAO:
             servicios.append(ServicioDAO.obtener_servicio_por_id(fila[0]))
         cursor.close()
         return servicios
+    
+    @staticmethod
+    def modificar_servicios_de_cancha(nro_cancha: int, nuevos_servicios: list):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        # eliminar todos los servicios actuales
+        cursor.execute('''DELETE FROM ServicioCancha WHERE nro_cancha = ?''', (nro_cancha,))
+        conexion.commit()
+        # agregar los nuevos servicios
+        for s in nuevos_servicios:
+            id_serv = ServicioDAO.obtener_id_servicio_por_nombre(s.servicio)
+            if id_serv is not None:
+                cursor.execute('''
+                    INSERT INTO ServicioCancha (id_servicio, nro_cancha)
+                    VALUES (?, ?)
+                ''', (id_serv, nro_cancha))
+        conexion.commit()
+        cursor.close()

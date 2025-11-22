@@ -77,6 +77,110 @@ async function guardarCambiosCliente() {
     }
 }
 
+// ---- Cancha  ----
+async function editarCancha(nro){
+    try{
+        const res = await fetch(`/api/canchas/${nro}`);
+        if (!res.ok) {
+            const error = await res.json();
+            alert('Error: ' + (error.error || 'No se pudo obtener la cancha'));
+            return;
+        }
+        const cancha = await res.json();
+        // Mostrar modal
+        document.getElementById("modal-editar-cancha").style.display = "block";
+
+        // Cargar datos
+        document.getElementById("edit-cancha-costo").value = cancha.costo_por_hora;
+        document.getElementById("edit-nro").value = cancha.nro_cancha
+        
+        const serviciosSelect = document.getElementById('edit-cancha-servicios');
+        if (serviciosSelect) {
+            // limpiar opciones previas
+            serviciosSelect.querySelectorAll('option').forEach(o => o.remove());
+            try {
+                const resp = await fetch('/api/servicios');
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                const servicios = await resp.json();
+                if (Array.isArray(servicios) && servicios.length > 0) {
+                    // preparar conjunto con los servicios ya asociados a la cancha
+                    const existentes = Array.isArray(cancha.servicios) ? cancha.servicios.map(x => (typeof x === 'string' ? x : (x.servicio ?? x.nombre ?? ''))) : [];
+                    servicios.forEach(s => {
+                        const opt = document.createElement('option');
+                        opt.value = s.servicio;
+                        opt.textContent = `$${s.costo} — ${s.servicio ?? s.nombre ?? 'Servicio'}`;
+                        // marcar como seleccionado si está en la lista de la cancha
+                        if (existentes.includes(opt.value)) opt.selected = true;
+                        serviciosSelect.appendChild(opt);
+                    });
+                } else {
+                    const opt = document.createElement('option');
+                    opt.value = '';
+                    opt.disabled = true;
+                    opt.textContent = 'No hay servicios disponibles';
+                    serviciosSelect.appendChild(opt);
+                }
+            } catch (err) {
+                console.error('Error cargando servicios:', err);
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.disabled = true;
+                opt.textContent = 'Error al cargar servicios';
+                serviciosSelect.appendChild(opt);
+            }
+        }
+    }catch(error){
+        alert('Error: ' + error.message);
+    }
+}
+
+async function guardarCambiosCancha() {
+    const costo = document.getElementById('edit-cancha-costo').value;
+    const nro = document.getElementById("edit-nro").value;
+    // obtener servicios seleccionados (multi-select)
+    const serviciosSelect = document.getElementById('edit-cancha-servicios');
+    const serviciosSeleccionados = [];
+    if (serviciosSelect) {
+        Array.from(serviciosSelect.selectedOptions).forEach(opt => {
+            if (opt.value) serviciosSeleccionados.push(opt.value);
+        });
+    }
+    
+    const errores = [];
+    
+    const errorCosto = Validaciones.esNumeroPositivo(costo, 'Costo por hora');
+    if (errorCosto) errores.push(errorCosto);
+    
+    if (Validaciones.mostrarErrores(errores)) return;
+    
+    const data = {
+        nro_cancha: nro,
+        costo_por_hora: parseFloat(costo),
+        servicios: serviciosSeleccionados
+    };
+    try {
+        const response = await fetch(`/api/canchas/${nro}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        if (response.ok) {
+            alert('Cancha editada exitosamente');
+            cerrarModalEditarCancha();
+            loadTabData('canchas');
+        } else {
+            const error = await response.json();
+            alert('Error: ' + error.error);
+        }
+    } catch (error) {
+        alert('Error: ' + error.message);
+    }
+}
+
+function cerrarModalEditarCancha() {
+    document.getElementById('modal-editar-cancha').style.display = 'none';
+}
+
 async function eliminarCancha(nro) {
     if (!confirm('¿Está seguro de eliminar esta cancha?')) return;
     try {

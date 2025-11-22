@@ -48,15 +48,30 @@ def modificar_cancha(nro_cancha):
         data = request.json
         cancha = Cancha(
             nro_cancha=nro_cancha,
-            tipo_cancha=TipoCancha(""),
-            costo_hora=data.get('costo_por_hora', 0)
+            tipo_cancha=TipoCancha(data.get('tipo_cancha', '')),
+            costo_hora=data.get('costo_por_hora', 0),
         )
-        cancha.id_tipo = data.get('id_tipo')
-        cancha.costo_por_hora = data.get('costo_por_hora')
+        cancha.servicios.extend(ServicioDAO.obtener_servicios_por_nombres(data.get('servicios', [])))
         CanchaDAO.modificar_cancha(cancha)
         return jsonify({'mensaje': 'Cancha modificada exitosamente'})
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+
+
+@bp_canchas.route('/<int:nro_cancha>', methods=['GET'])
+def obtener_cancha(nro_cancha):
+    try:
+        cancha = CanchaDAO.obtener_cancha_por_nro(nro_cancha)
+        if not cancha:
+            return jsonify({'error': 'Cancha no encontrada'}), 404
+        return jsonify({
+            'nro_cancha': cancha.nro_cancha,
+            'tipo': cancha.tipo_cancha.tipo if cancha.tipo_cancha else None,
+            'costo_por_hora': cancha.costo_hora,
+            'servicios': [s.servicio if hasattr(s, 'servicio') else (s.nombre if hasattr(s, 'nombre') else str(s)) for s in cancha.servicios]
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @bp_canchas.route('/<int:nro_cancha>', methods=['DELETE'])
 def eliminar_cancha(nro_cancha):

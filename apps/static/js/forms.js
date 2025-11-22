@@ -154,50 +154,6 @@ async function guardarReserva(event) {
     }
 }
 
-async function guardarPago(event) {
-    event.preventDefault();
-    
-    const idMetodo = document.getElementById('pago-metodo').value;
-    const fecha = document.getElementById('pago-fecha').value;
-    const monto = document.getElementById('pago-monto').value;
-    
-    const errores = [];
-    
-    const errorMetodo = Validaciones.esEnteroPositivo(idMetodo, 'ID del método de pago');
-    if (errorMetodo) errores.push(errorMetodo);
-    
-    const errorFecha = Validaciones.esFechaValida(fecha, 'Fecha y hora del pago');
-    if (errorFecha) errores.push(errorFecha);
-    
-    const errorMonto = Validaciones.esNumeroPositivo(monto, 'Monto');
-    if (errorMonto) errores.push(errorMonto);
-    
-    if (Validaciones.mostrarErrores(errores)) return;
-    
-    const data = {
-        id_metodo_pago: parseInt(idMetodo),
-        fecha_hora: fecha,
-        monto: parseFloat(monto)
-    };
-    try {
-        const response = await fetch('/api/pagos', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        });
-        if (response.ok) {
-            alert('Pago agregado exitosamente');
-            cancelarForm('pago');
-            loadTabData('pagos');
-        } else {
-            const error = await response.json();
-            alert('Error: ' + error.error);
-        }
-    } catch (error) {
-        alert('Error: ' + error.message);
-    }
-}
-
 async function guardarTorneo(event) {
     event.preventDefault();
     
@@ -316,40 +272,6 @@ async function guardarServicio(event) {
             alert('Servicio agregado exitosamente');
             cancelarForm('servicio');
             loadTabData('servicios');
-        } else {
-            const error = await response.json();
-            alert('Error: ' + error.error);
-        }
-    } catch (error) {
-        alert('Error: ' + error.message);
-    }
-}
-
-async function guardarMetodoPago(event) {
-    event.preventDefault();
-    
-    const metodo = document.getElementById('metodo-pago-nombre').value;
-    
-    const errores = [];
-    
-    const errorMetodo = Validaciones.esTextoValido(metodo, 'Método de pago', 3, 50);
-    if (errorMetodo) errores.push(errorMetodo);
-    
-    if (Validaciones.mostrarErrores(errores)) return;
-    
-    const data = {
-        metodo: metodo.trim()
-    };
-    try {
-        const response = await fetch('/api/metodos-pago', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        });
-        if (response.ok) {
-            alert('Método de pago agregado exitosamente');
-            cancelarForm('metodo-pago');
-            loadTabData('metodos-pago');
         } else {
             const error = await response.json();
             alert('Error: ' + error.error);

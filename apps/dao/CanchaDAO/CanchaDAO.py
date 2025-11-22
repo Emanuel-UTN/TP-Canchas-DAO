@@ -97,9 +97,11 @@ class CanchaDAO:
         cursor = conexion.cursor()
         cursor.execute('''
             UPDATE Cancha
-            SET id_tipo = ?, costo_por_hora = ?
+            SET costo_por_hora = ?
             WHERE nro_cancha = ?
-        ''', (TipoCanchaDAO.obtener_id_tipo_cancha_por_tipo(cancha.tipo_cancha.tipo), cancha.costo_hora, cancha.nro_cancha))
+        ''', (cancha.costo_hora, cancha.nro_cancha))
         conexion.commit()
+
+        ServicioCanchaDAO.modificar_servicios_de_cancha(cancha.nro_cancha, cancha.servicios)
         cursor.close()
 
