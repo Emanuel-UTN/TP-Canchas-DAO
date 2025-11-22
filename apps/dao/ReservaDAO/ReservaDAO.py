@@ -35,10 +35,12 @@ class ReservaDAO:
     def agregar_reserva(reserva: Reserva):
         conexion = ConexionDB().obtener_conexion()
         cursor = conexion.cursor()
+        fecha_val = reserva.fecha_hora_inicio.strftime('%Y-%m-%dT%H:%M:%S') if isinstance(reserva.fecha_hora_inicio, datetime) else str(reserva.fecha_hora_inicio)
+        horas_val = int(reserva.horas)
         cursor.execute('''
             INSERT INTO Reserva (fecha_hora_inicio, horas, nro_cancha, dni_cliente, id_pago, id_estado)
             VALUES (?, ?, ?, ?, ?, ?)
-        ''', (reserva.fecha_hora_inicio, reserva.horas, reserva.cancha.nro_cancha, reserva.cliente.dni, None, EstadoReservaDAO.obtener_id_estado_reserva_por_nombre("Pendiente")))
+        ''', (fecha_val, horas_val, reserva.cancha.nro_cancha, reserva.cliente.dni, None, EstadoReservaDAO.obtener_id_estado_reserva_por_nombre("Pendiente")))
         conexion.commit()
         cursor.close()
 
@@ -80,11 +82,13 @@ class ReservaDAO:
     def modificar_reserva(reserva: Reserva):
         conexion = ConexionDB().obtener_conexion()
         cursor = conexion.cursor()
+        fecha_val = reserva.fecha_hora_inicio.strftime('%Y-%m-%dT%H:%M:%S') if isinstance(reserva.fecha_hora_inicio, datetime) else str(reserva.fecha_hora_inicio)
+        horas_val = int(reserva.horas)
         cursor.execute('''
             UPDATE Reserva
             SET fecha_hora_inicio = ?, horas = ?, nro_cancha = ?, dni_cliente = ?, id_pago = ?, id_estado = ?
             WHERE nro_reserva = ?
-        ''', (reserva.fecha_hora_inicio, reserva.horas, reserva.nro_cancha, reserva.dni_cliente, reserva.id_pago, reserva.id_estado, reserva.nro_reserva))
+        ''', (fecha_val, horas_val, reserva.nro_cancha, reserva.dni_cliente, reserva.id_pago, reserva.id_estado, reserva.nro_reserva))
         conexion.commit()
         cursor.close()
     

@@ -7,8 +7,18 @@ from models.Validaciones import Validaciones
 class Reserva:
     def __init__(self, nro_reserva, cliente: Cliente, cancha: Cancha, fecha_hora_inicio, horas: int, pago: Pago):
         self.nro_reserva = nro_reserva
-        self.fecha_hora_inicio = Validaciones.esFechaValida(fecha_hora_inicio, "Fecha y hora de inicio")
-        self.horas = Validaciones.esEnteroPositivo(horas, "Cantidad de horas", max_value=6)
+        # Validar fecha
+        fecha_val = Validaciones.esFechaValida(fecha_hora_inicio, "Fecha y hora de inicio")
+        if isinstance(fecha_val, str):
+            raise ValueError(fecha_val)
+        self.fecha_hora_inicio = fecha_val
+
+        # Validar horas
+        horas_val = Validaciones.esEnteroPositivo(horas, "Cantidad de horas", max_value=6)
+        if isinstance(horas_val, str):
+            raise ValueError(horas_val)
+        # asegurar entero
+        self.horas = int(horas_val)
         self.cliente = cliente
         self.cancha = cancha
         self.estado = EstadoReserva.PENDIENTE

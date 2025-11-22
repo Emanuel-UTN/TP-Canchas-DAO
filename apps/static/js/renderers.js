@@ -72,10 +72,27 @@ function renderReservas(data, container) {
         return;
     }
 
+    // Parsear una fecha recibida desde la API como cadena y construir un Date en hora local
+    function parseLocalDate(str) {
+        if (!str) return new Date(NaN);
+        // formatos esperados: 'YYYY-MM-DD HH:MM:SS' o 'YYYY-MM-DDTHH:MM:SS' o 'YYYY-MM-DDTHH:MM'
+        const m = String(str).match(/(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2})/);
+        if (m) {
+            const year = parseInt(m[1], 10);
+            const month = parseInt(m[2], 10) - 1;
+            const day = parseInt(m[3], 10);
+            const hour = parseInt(m[4], 10);
+            const minute = parseInt(m[5], 10);
+            return new Date(year, month, day, hour, minute);
+        }
+        // fallback al constructor estándar
+        return new Date(str);
+    }
+
     function formatDate(d){
         const pad = n => String(n).padStart(2, '0');
         let fechaFormateada = 'Fecha inválida';
-        if (!isNaN(d)) {
+        if (d instanceof Date && !isNaN(d.getTime())) {
             fechaFormateada = `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
         }
         return fechaFormateada
@@ -85,7 +102,7 @@ function renderReservas(data, container) {
     data.forEach(reserva => {
         html += `<tr>
             <td>${reserva.nro_reserva}</td>
-            <td>${formatDate(new Date(reserva.fecha_hora_inicio))}</td>
+            <td>${formatDate(parseLocalDate(reserva.fecha_hora_inicio))}</td>
             <td>${reserva.horas}</td>
             <td>${reserva.cancha.nro_cancha} - ${reserva.cancha.tipo}</td>
             <td>${reserva.cliente.nombre} ${reserva.cliente.apellido}</td>
