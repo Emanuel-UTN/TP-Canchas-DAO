@@ -1,4 +1,5 @@
 from dao.conexion import ConexionDB
+from datetime import datetime
 from models.Torneo.Torneo import Torneo
 from dao.TorneoDAO.PartidoDAO import PartidoDAO
 from dao.TorneoDAO.TorneoEquipoDAO import TorneoEquipoDAO
@@ -181,10 +182,26 @@ class TorneoDAO:
         filas = cursor.fetchall()
         torneos = []
         for f in filas:
+            # formatear solo la parte de fecha (YYYY-MM-DD)
+            def _date_only(val):
+                if isinstance(val, datetime):
+                    return val.date().isoformat()
+                if isinstance(val, str):
+                    try:
+                        d = datetime.fromisoformat(val)
+                        return d.date().isoformat()
+                    except Exception:
+                        try:
+                            d = datetime.strptime(val, "%Y-%m-%d %H:%M:%S")
+                            return d.date().isoformat()
+                        except Exception:
+                            return val[:10] if len(val) >= 10 else val
+                return val
+
             torneos.append({
                 'id': f['id'],
-                'fecha_inicio': f['fecha_inicio'],
-                'fecha_fin': f['fecha_fin'],
+                'fecha_inicio': _date_only(f['fecha_inicio']),
+                'fecha_fin': _date_only(f['fecha_fin']),
                 'costo_inscripcion': f['costo_inscripcion'],
                 'premio': f['premio'],
                 'numero_equipos': f['numero_equipos']

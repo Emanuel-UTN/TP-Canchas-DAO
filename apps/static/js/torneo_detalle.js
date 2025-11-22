@@ -16,8 +16,8 @@
         if (metaEl) metaEl.innerHTML = `
             <strong>Inicio:</strong> ${data.fecha_inicio} &nbsp; 
             <strong>Fin:</strong> ${data.fecha_fin} &nbsp; 
-            <strong>Costo:</strong> $${data.costo_inscripcion} &nbsp; 
-            <strong>Premio:</strong> $${data.premio} &nbsp; 
+            <strong>Costo:</strong> $${formatNumber(data.costo_inscripcion)} &nbsp; 
+            <strong>Premio:</strong> $${formatNumber(data.premio)} &nbsp; 
             <strong>Equipos:</strong> ${data.tabla.length}
         `;
 
@@ -240,3 +240,17 @@
         }
     });
 })();
+
+function formatNumber(value) {
+    if (value === null || value === undefined) return '';
+    const s = String(value).trim();
+    // no formatear si contiene letras (p. ej. códigos mixtos)
+    if (/[a-zA-Z]/.test(s)) return s;
+    // reconocer signo y parte decimal (',' o '.')
+    const m = s.match(/^(-?\d+)([.,](\d+))?$/);
+    if (!m) return s;
+    let intPart = m[1];
+    const dec = m[3] || null;
+    intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return dec ? intPart + ',' + dec : intPart;
+}

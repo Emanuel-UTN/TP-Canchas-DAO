@@ -52,20 +52,27 @@ class Torneo:
 
     def to_dict(self):
         # Serializa el objeto Torneo a un dict JSON-serializable
-        def _maybe_iso(dt):
-            try:
-                # Validaciones devuelve objetos datetime en muchos casos
-                from datetime import datetime
-                if isinstance(dt, datetime):
-                    return dt.isoformat()
-            except Exception:
-                pass
+        def _date_only(dt):
+            # Convierte datetime o strings con fecha/hora a 'YYYY-MM-DD'
+            from datetime import datetime
+            if isinstance(dt, datetime):
+                return dt.date().isoformat()
+            if isinstance(dt, str):
+                try:
+                    d = datetime.fromisoformat(dt)
+                    return d.date().isoformat()
+                except Exception:
+                    try:
+                        d = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S")
+                        return d.date().isoformat()
+                    except Exception:
+                        return dt[:10] if len(dt) >= 10 else dt
             return dt
 
         return {
             'id': getattr(self, 'id', None),
-            'fecha_inicio': _maybe_iso(self.fecha_inicio),
-            'fecha_fin': _maybe_iso(self.fecha_fin),
+            'fecha_inicio': _date_only(self.fecha_inicio),
+            'fecha_fin': _date_only(self.fecha_fin),
             'costo_inscripcion': self.costo_inscripcion,
             'premio': self.premio,
             'tabla': self.tabla,
