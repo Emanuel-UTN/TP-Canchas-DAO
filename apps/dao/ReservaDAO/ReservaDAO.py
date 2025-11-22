@@ -74,13 +74,16 @@ class ReservaDAO:
         # (guardamos como 'YYYY-MM-DDTHH:MM:SS'), así la comparación BETWEEN funciona correctamente.
         fecha_dia_inicio_str = fecha_dia_inicio.strftime('%Y-%m-%dT%H:%M:%S')
         fecha_dia_fin_str = fecha_hora_fin.strftime('%Y-%m-%dT%H:%M:%S')
+
+        id_estado_cancelado = EstadoReservaDAO.obtener_id_estado_reserva_por_nombre("Cancelada")
         cursor.execute('''
                        SELECT nro_reserva, fecha_hora_inicio, horas, nro_cancha, dni_cliente, id_pago, id_estado 
                        FROM Reserva 
                        WHERE 
                             nro_cancha = ? 
-                            AND fecha_hora_inicio BETWEEN ? AND ?''', 
-                        (nro_cancha, fecha_dia_inicio_str, fecha_dia_fin_str))
+                            AND fecha_hora_inicio BETWEEN ? AND ?
+                            AND id_estado != ?''',
+                        (nro_cancha, fecha_dia_inicio_str, fecha_dia_fin_str, id_estado_cancelado))
         fila = cursor.fetchall()
         cursor.close()
         reservas = []
@@ -116,3 +119,11 @@ class ReservaDAO:
         reserva.estado = EstadoReservaDAO.obtener_estado_reserva_por_id(fila[6])
         return reserva  
     
+    @staticmethod
+    def cancelar_reserva(nro_reserva: int):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        id_estado_cancelado = EstadoReservaDAO.obtener_id_estado_reserva_por_nombre("Cancelada")
+        cursor.execute('''UPDATE Reserva SET id_estado = ? WHERE nro_reserva = ?''', (id_estado_cancelado, nro_reserva))
+        conexion.commit()
+        cursor.close()

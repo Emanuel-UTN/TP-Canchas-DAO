@@ -154,3 +154,11 @@ def eliminar_reserva(nro_reserva):
         return jsonify({'mensaje': 'Reserva eliminada exitosamente'})
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+    
+@bp_reservas.route('/cancelar/<int:nro_reserva>', methods=['PUT'])
+def cancelar_reserva(nro_reserva):
+    try:
+        ReservaDAO.cancelar_reserva(nro_reserva)
+        return jsonify({'mensaje': 'Reserva cancelada exitosamente'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400

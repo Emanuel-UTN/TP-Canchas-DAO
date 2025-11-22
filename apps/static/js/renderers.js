@@ -101,14 +101,21 @@ function renderReservas(data, container) {
 
     let html = '<table><thead><tr><th>Nro. Reserva</th><th>Fecha Inicio</th><th>Horas</th><th>Cancha</th><th>Cliente</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>';
     data.forEach(reserva => {
-        html += `<tr>
+        const cancelBtn = (reserva.estado === "Pendiente")
+            ? `<button class="btn btn-warning" onclick="cancelarReserva(${reserva.nro_reserva})">Cancelar</button>`
+            : '';
+
+        html += `<tr class="${(reserva.estado == "Cancelada") ? 'bg-secondary-subtle' : ''}">
             <td>${reserva.nro_reserva}</td>
             <td>${formatDate(parseLocalDate(reserva.fecha_hora_inicio))}</td>
             <td>${reserva.horas}</td>
             <td>${reserva.cancha.nro_cancha} - ${reserva.cancha.tipo}</td>
             <td>${reserva.cliente.nombre} ${reserva.cliente.apellido}</td>
             <td>${reserva.estado}</td>
-            <td><button class="btn btn-danger" onclick="eliminarReserva(${reserva.nro_reserva})">Eliminar</button></td>
+            <td>
+                ${cancelBtn}
+                <button class="btn btn-danger" onclick="eliminarReserva(${reserva.nro_reserva})">Eliminar</button>
+            </td>
         </tr>`;
     });
     html += '</tbody></table>';

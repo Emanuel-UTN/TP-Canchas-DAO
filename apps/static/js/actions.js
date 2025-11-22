@@ -197,6 +197,24 @@ async function eliminarCancha(nro) {
     }
 }
 
+// ---- Reserva  ----
+async function cancelarReserva(nro){
+    if(!confirm("¿Está seguro de cancelar esta reserva?")) return;
+    try{
+        const response = await fetch(`/api/reservas/cancelar/${nro}`, {method: 'PUT'});
+        if (response.ok){
+            alert('Reserva cancelada exitosamente');
+            loadTabData('reservas');
+        }else{
+            const error = await response.json();
+            alert("Error: " + error.error);
+        }
+    } catch(error){
+        alert('Error: ' + error.message);
+    }
+
+}
+
 async function eliminarReserva(nro) {
     if (!confirm('¿Está seguro de eliminar esta reserva?')) return;
     try {
