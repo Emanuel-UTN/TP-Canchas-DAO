@@ -21,9 +21,23 @@ def obtener_torneos():
 def agregar_torneo():
     try:
         data = request.json
+        # normalizar fechas: aceptar 'YYYY-MM-DD' o 'YYYY-MM-DD HH:MM:SS' o ISO, y usar solo la parte de fecha
+        def _date_only_str(v):
+            if v is None:
+                return v
+            s = str(v)
+            if 'T' in s:
+                return s.split('T')[0]
+            if ' ' in s:
+                return s.split(' ')[0]
+            return s
+
+        fecha_inicio = _date_only_str(data.get('fecha_inicio'))
+        fecha_fin = _date_only_str(data.get('fecha_fin'))
+
         torneo = Torneo(
-            fecha_inicio=data['fecha_inicio'],
-            fecha_fin=data['fecha_fin'],
+            fecha_inicio=fecha_inicio,
+            fecha_fin=fecha_fin,
             costo_inscripcion=data['costo_inscripcion'],
             premio=data['premio']
         )
@@ -41,9 +55,22 @@ def agregar_torneo():
 def modificar_torneo(id):
     try:
         data = request.json
+        def _date_only_str(v):
+            if v is None:
+                return v
+            s = str(v)
+            if 'T' in s:
+                return s.split('T')[0]
+            if ' ' in s:
+                return s.split(' ')[0]
+            return s
+
+        fecha_inicio = _date_only_str(data.get('fecha_inicio'))
+        fecha_fin = _date_only_str(data.get('fecha_fin'))
+
         torneo = Torneo(
-            fecha_inicio=data['fecha_inicio'],
-            fecha_fin=data['fecha_fin'],
+            fecha_inicio=fecha_inicio,
+            fecha_fin=fecha_fin,
             costo_inscripcion=data['costo_inscripcion'],
             premio=data['premio']
         )
@@ -132,14 +159,19 @@ def agregar_equipo_a_torneo(id):
         delegado = ClienteDAO.obtener_cliente_por_dni(int(dni_delegado))
         if delegado is None:
             return jsonify({'error': 'Delegado (cliente) no encontrado'}), 400
+        
+        equipo, id_equipo = EquipoDAO.obtener_equipo_por_nombre_y_delegado(nombre, int(dni_delegado))
+        if equipo is None:
+            # crear equipo
+            equipo = Equipo(nombre=nombre, delegado=delegado)
+            id_equipo = EquipoDAO.agregar_equipo(equipo)
 
-        # crear equipo
-        equipo = Equipo(nombre=nombre, delegado=delegado)
-        nuevo_id = EquipoDAO.agregar_equipo(equipo)
+        if TorneoEquipoDAO.equipo_en_torneo(id_equipo, id):
+            return jsonify({'error': 'El equipo ya está registrado en el torneo'}), 409
 
         # vincular al torneo con 0 puntos iniciales
-        TorneoEquipoDAO.agregar_torneo_equipo(id, nuevo_id, 0)
+        TorneoEquipoDAO.agregar_torneo_equipo(id, id_equipo, 0)
 
-        return jsonify({'mensaje': 'Equipo agregado al torneo', 'id_equipo': nuevo_id}), 201
+        return jsonify({'mensaje': 'Equipo agregado al torneo', 'id_equipo': id_equipo}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500

@@ -183,9 +183,23 @@ async function guardarTorneo(event) {
     
     if (Validaciones.mostrarErrores(errores)) return;
     
+    // Normalizar fechas: aceptar DD/MM/YYYY o YYYY-MM-DD y enviar YYYY-MM-DD
+    function normalizeDateInput(s) {
+        if (!s) return s;
+        // si ya es YYYY-MM-DD
+        if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+        // si es DD/MM/YYYY
+        const m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+        if (m) return `${m[3]}-${m[2]}-${m[1]}`;
+        // si viene con time ISO, tomar parte fecha
+        if (s.includes('T')) return s.split('T')[0];
+        if (s.includes(' ')) return s.split(' ')[0];
+        return s;
+    }
+
     const data = {
-        fecha_inicio: fechaInicio,
-        fecha_fin: fechaFin,
+        fecha_inicio: normalizeDateInput(fechaInicio),
+        fecha_fin: normalizeDateInput(fechaFin),
         costo_inscripcion: parseFloat(costoInscripcion),
         premio: parseFloat(premio)
     };

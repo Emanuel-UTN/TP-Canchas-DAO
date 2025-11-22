@@ -73,6 +73,21 @@ class EquipoDAO:
         return equipo
     
     @staticmethod
+    def obtener_equipo_por_nombre_y_delegado(nombre: str, dni_delegado: int):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute('''SELECT id_equipo, dni_delegado, nombre FROM Equipo WHERE nombre = ? AND dni_delegado = ?''', (nombre, dni_delegado))
+        fila = cursor.fetchone()
+        equipo = None
+        if fila:
+            equipo = Equipo(
+                delegado=ClienteDAO.obtener_cliente_por_dni(fila[1]),
+                nombre=fila[2]
+            )
+        cursor.close()
+        return equipo, fila[0] if fila else None
+    
+    @staticmethod
     def modificar_equipo(equipo: Equipo):
         conexion = ConexionDB().obtener_conexion()
         cursor = conexion.cursor()

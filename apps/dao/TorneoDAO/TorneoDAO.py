@@ -13,8 +13,8 @@ class TorneoDAO:
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Torneo (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                fecha_inicio DATETIME NOT NULL,
-                fecha_fin DATETIME NOT NULL,
+                fecha_inicio DATE NOT NULL,
+                fecha_fin DATE NOT NULL,
                 costo_inscripcion REAL NOT NULL CHECK(costo_inscripcion > 0),
                 premio REAL NOT NULL CHECK(premio > 0),
                 CHECK(fecha_fin > fecha_inicio)

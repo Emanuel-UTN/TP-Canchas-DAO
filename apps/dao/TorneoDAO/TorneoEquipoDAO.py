@@ -82,3 +82,12 @@ class TorneoEquipoDAO:
         ''', (puntos, id_torneo, id_equipo))
         conexion.commit()
         cursor.close()
+
+    @staticmethod
+    def equipo_en_torneo(id_torneo: int, id_equipo: int) -> bool:
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute('''SELECT COUNT(*) FROM TorneoEquipo WHERE id_torneo = ? AND id_equipo = ?''', (id_torneo, id_equipo))
+        fila = cursor.fetchone()
+        cursor.close()
+        return fila[0] > 0

@@ -209,6 +209,12 @@
                 if (mensajeEl) mensajeEl.innerText = 'Completar nombre y DNI';
                 return;
             }
+
+            const errores = [];
+            const errorNombre = Validaciones.esTextoValido(nombre, 'Nombre');
+            if (errorNombre) errores.push(errorNombre);
+            if (Validaciones.mostrarErrores(errores)) return;
+
             try {
                 const res = await fetch(`/api/torneos/${torneoId}/equipos`, {
                     method: 'POST',

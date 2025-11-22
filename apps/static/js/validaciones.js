@@ -74,8 +74,12 @@ const Validaciones = {
     },
     
     esTextoValido: (texto, nombreCampo, minLength = 2, maxLength = 100) => {
-        const trimmed = texto.trim();
-        if (trimmed.length <= minLength) {
+        if (texto === null || texto === undefined) {
+            return `${nombreCampo} debe tener al menos ${minLength} caracteres`;
+        }
+        const s = String(texto);
+        const trimmed = s.trim();
+        if (trimmed.length < minLength) {
             return `${nombreCampo} debe tener al menos ${minLength} caracteres`;
         }
         if (trimmed.length > maxLength) {
