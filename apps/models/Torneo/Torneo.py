@@ -49,3 +49,25 @@ class Torneo:
             "numero_partidos": len(self.partidos)
         }
         return info
+
+    def to_dict(self):
+        # Serializa el objeto Torneo a un dict JSON-serializable
+        def _maybe_iso(dt):
+            try:
+                # Validaciones devuelve objetos datetime en muchos casos
+                from datetime import datetime
+                if isinstance(dt, datetime):
+                    return dt.isoformat()
+            except Exception:
+                pass
+            return dt
+
+        return {
+            'id': getattr(self, 'id', None),
+            'fecha_inicio': _maybe_iso(self.fecha_inicio),
+            'fecha_fin': _maybe_iso(self.fecha_fin),
+            'costo_inscripcion': self.costo_inscripcion,
+            'premio': self.premio,
+            'tabla': self.tabla,
+            'partidos': self.partidos
+        }

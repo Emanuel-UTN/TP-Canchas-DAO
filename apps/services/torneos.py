@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from dao.TorneoDAO.TorneoDAO import TorneoDAO
 from models.Torneo.Torneo import Torneo
+from models.Torneo.Equipo import Equipo
 from dao.TorneoDAO.EquipoDAO import EquipoDAO
 from dao.TorneoDAO.TorneoEquipoDAO import TorneoEquipoDAO
 from dao.ClienteDAO.ClienteDAO import ClienteDAO
@@ -69,10 +70,22 @@ def eliminar_torneo(id):
 @bp_torneos.route('/detalle/<int:id>', methods=['GET'])
 def obtener_detalle_torneo(id):
     try:
-        detalle = TorneoDAO.obtener_detalle_torneo(id)
-        if detalle is None:
+        torneo = TorneoDAO.obtener_detalle_torneo(id)
+        if torneo is None:
             return jsonify({'error': 'Torneo no encontrado'}), 404
-        return jsonify(detalle)
+        # Torneo es una instancia de modelo; serializar a dict antes de jsonify
+        if hasattr(torneo, 'to_dict'):
+            return jsonify(torneo.to_dict())
+        # fallback: intentar convertir atributos manualmente
+        return jsonify({
+            'id': getattr(torneo, 'id', None),
+            'fecha_inicio': getattr(torneo, 'fecha_inicio', None),
+            'fecha_fin': getattr(torneo, 'fecha_fin', None),
+            'costo_inscripcion': getattr(torneo, 'costo_inscripcion', None),
+            'premio': getattr(torneo, 'premio', None),
+            'tabla': getattr(torneo, 'tabla', []),
+            'partidos': getattr(torneo, 'partidos', [])
+        })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -121,8 +134,7 @@ def agregar_equipo_a_torneo(id):
             return jsonify({'error': 'Delegado (cliente) no encontrado'}), 400
 
         # crear equipo
-        from models.Torneo.Equipo import Equipo as EquipoModel
-        equipo = EquipoModel(nombre=nombre, delegado=delegado)
+        equipo = Equipo(nombre=nombre, delegado=delegado)
         nuevo_id = EquipoDAO.agregar_equipo(equipo)
 
         # vincular al torneo con 0 puntos iniciales

@@ -27,7 +27,7 @@ class EquipoDAO:
         cursor.execute('''
             INSERT INTO Equipo (dni_delegado, nombre)
             VALUES (?, ?)
-        ''', (equipo.dni_delegado, equipo.nombre))
+        ''', (equipo.delegado.dni, equipo.nombre))
         conexion.commit()
         last_id = cursor.lastrowid
         cursor.close()

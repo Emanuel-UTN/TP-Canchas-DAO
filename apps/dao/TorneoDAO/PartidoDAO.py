@@ -73,6 +73,29 @@ class PartidoDAO:
         return partidos
     
     @staticmethod
+    def obtener_partidos_por_torneo(id_torneo: int):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        partidos = []
+        cursor.execute('''SELECT id_partido, id_torneo, id_equipo1, id_equipo2, nro_cancha, 
+                goles_equipo1, goles_equipo2, fecha_hora FROM Partido WHERE id_torneo = ?''', (id_torneo,))
+        filas = cursor.fetchall()
+        for fila in filas:
+            partido = Partido(
+                equipo_1=EquipoDAO.obtener_equipo_por_id(fila[2]),
+                equipo_2=EquipoDAO.obtener_equipo_por_id(fila[3]),
+                cancha=CanchaDAO.obtener_cancha_por_numero(fila[4]),
+                fecha_hora=fila[7]
+            )
+            partido.goles_1 = fila[5]
+            partido.goles_2 = fila[6]
+            partido.id_partido = fila[0]
+            partido.id_torneo = fila[1]
+            partidos.append(partido)
+        cursor.close()
+        return partidos
+    
+    @staticmethod
     def modificar_partido(partido: Partido):
         conexion = ConexionDB().obtener_conexion()
         cursor = conexion.cursor()
