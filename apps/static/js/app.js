@@ -5,7 +5,6 @@ window.onload = function() {
         'clientes-table-container',
         'canchas-table-container',
         'reservas-table-container',
-        'pagos-table-container',
         'torneos-table-container',
         'tipos-cancha-table-container',
         'servicios-table-container',
