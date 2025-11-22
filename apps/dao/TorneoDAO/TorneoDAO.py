@@ -19,6 +19,7 @@ class TorneoDAO:
                 CHECK(fecha_fin > fecha_inicio)
                 )
             ''')
+
         conexion.commit()
         cursor.close()
 
