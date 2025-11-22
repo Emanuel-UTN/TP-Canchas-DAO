@@ -29,8 +29,32 @@ def agregar_cliente():
         )
         ClienteDAO.agregar_cliente(cliente)
         return jsonify({'mensaje': 'Cliente agregado exitosamente'}), 201
-    except Exception as e:
+    except ValueError as e:
+        # Error de validación del modelo
         return jsonify({'error': str(e)}), 400
+    except KeyError as e:
+        return jsonify({'error': f'Campo requerido faltante: {str(e)}'}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@bp_clientes.route('/<int:dni>', methods=['GET'])
+def obtener_cliente_por_dni(dni):
+    try:
+        cliente = ClienteDAO.obtener_cliente_por_dni(dni)
+        
+        if not cliente:
+            return jsonify({'error': 'Cliente no encontrado'}), 404
+
+        return jsonify({
+            'dni': cliente.dni,
+            'nombre': cliente.nombre,
+            'apellido': cliente.apellido,
+            'telefono': cliente.telefono
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 @bp_clientes.route('/<int:dni>', methods=['PUT'])
 def modificar_cliente(dni):
@@ -44,8 +68,13 @@ def modificar_cliente(dni):
         )
         ClienteDAO.modificar_cliente(cliente)
         return jsonify({'mensaje': 'Cliente modificado exitosamente'})
-    except Exception as e:
+    except ValueError as e:
+        # Error de validación del modelo
         return jsonify({'error': str(e)}), 400
+    except KeyError as e:
+        return jsonify({'error': f'Campo requerido faltante: {str(e)}'}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @bp_clientes.route('/<int:dni>', methods=['DELETE'])
 def eliminar_cliente(dni):

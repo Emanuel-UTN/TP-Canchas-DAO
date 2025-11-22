@@ -25,5 +25,15 @@
     <div id="tipos-cancha-table-container">
         <div class="loading">Cargando...</div>
     </div>
+    <div id="modal-editar-tipo" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Editar Tipo de Cancha</h3>
+            <input type="hidden" id="edit-tipo-actual">
+            <label for="edit-tipo-nombre">Tipo</label>
+            <input type="text" id="edit-tipo-nombre" required>
+            <button class="btn btn-success" onclick="guardarCambiosTipoCancha()">Guardar</button>
+            <button class="btn btn-danger" onclick="cerrarModalEditarTipo()">Cancelar</button>
+        </div>
+    </div>
 </div>
 {% endblock %}

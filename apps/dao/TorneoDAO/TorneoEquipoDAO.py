@@ -8,9 +8,9 @@ class TorneoEquipoDAO:
 
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS TorneoEquipo (
-                id_torneo INTEGER,
-                id_equipo INTEGER,
-                puntos INTEGER,
+                id_torneo INTEGER NOT NULL CHECK(id_torneo > 0),
+                id_equipo INTEGER NOT NULL CHECK(id_equipo > 0),
+                puntos INTEGER NOT NULL DEFAULT 0 CHECK(puntos >= 0),
                 PRIMARY KEY (id_torneo, id_equipo),
                 FOREIGN KEY (id_torneo) REFERENCES Torneo(id),
                 FOREIGN KEY (id_equipo) REFERENCES Equipo(id_equipo)

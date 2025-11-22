@@ -29,5 +29,17 @@
     <div id="servicios-table-container">
         <div class="loading">Cargando...</div>
     </div>
+    <div id="modal-editar-servicio" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>Editar Servicio</h3>
+            <input type="hidden" id="edit-servicio-actual">
+            <label for="edit-servicio-nombre">Servicio</label>
+            <input type="text" id="edit-servicio-nombre" required>
+            <label for="edit-servicio-costo">Costo</label>
+            <input type="number" step="0.01" id="edit-servicio-costo" required>
+            <button class="btn btn-success" onclick="guardarCambiosServicio()">Guardar</button>
+            <button class="btn btn-danger" onclick="cerrarModalEditarServicio()">Cancelar</button>
+        </div>
+    </div>
 </div>
 {% endblock %}

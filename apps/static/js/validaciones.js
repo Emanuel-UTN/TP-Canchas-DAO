@@ -16,13 +16,54 @@ const Validaciones = {
         return null;
     },
     
+    generarCUIL: (dni, sexo = "M") => {
+        dni = dni.toString().padStart(8, '0');
+
+        let prefijo;
+        if (sexo === "M") prefijo = "20";
+        else if (sexo === "F") prefijo = "27";
+        else prefijo = "23";
+
+        const base = prefijo + dni;
+        const coef = [5,4,3,2,7,6,5,4,3,2];
+
+        let suma = 0;
+        for (let i = 0; i < 10; i++) suma += Number(base[i]) * coef[i];
+
+        let verificador = 11 - (suma % 11);
+        if (verificador === 11) verificador = 0;
+        if (verificador === 10) return null;
+
+        return `${prefijo}-${dni}-${verificador}`;
+    },
+
     esDNIValido: (dni) => {
-        const num = parseInt(dni);
-        if (isNaN(num) || num < 1000000 || num > 99999999) {
-            return 'El DNI debe tener entre 7 y 8 dígitos';
+        if (!dni) return "El DNI es obligatorio";
+
+        dni = dni.toString().trim().replace(/\./g, '');
+
+        if (!/^\d+$/.test(dni))
+            return "El DNI debe contener solo números";
+
+        if (dni.length < 7 || dni.length > 8)
+            return "El DNI debe tener entre 7 y 8 dígitos";
+
+        if (/^0+$/.test(dni))
+            return "El DNI no puede ser un número inválido";
+
+        try {
+            const cuilM = Validaciones.generarCUIL(dni, "M");
+            const cuilF = Validaciones.generarCUIL(dni, "F");
+            if (!cuilM && !cuilF) {
+                return "El DNI no genera un CUIL válido";
+            }
+        } catch (e) {
+            return "Error al calcular CUIL";
         }
+
         return null;
     },
+
     
     esTelefonoValido: (telefono) => {
         const regex = /^[0-9]{7,15}$/;
@@ -34,7 +75,7 @@ const Validaciones = {
     
     esTextoValido: (texto, nombreCampo, minLength = 2, maxLength = 100) => {
         const trimmed = texto.trim();
-        if (trimmed.length < minLength) {
+        if (trimmed.length <= minLength) {
             return `${nombreCampo} debe tener al menos ${minLength} caracteres`;
         }
         if (trimmed.length > maxLength) {
@@ -53,7 +94,11 @@ const Validaciones = {
         const fechaObj = new Date(fecha);
         if (isNaN(fechaObj.getTime())) {
             return `${nombreCampo} no es válida`;
+        }// validar que los minutos sean cero
+        else if (fechaObj.getMinutes() !== 0) {
+            return `${nombreCampo} debe tener los minutos en 00`;
         }
+        
         return null;
     },
     
@@ -65,6 +110,21 @@ const Validaciones = {
         const ahora = new Date();
         if (fechaObj < ahora) {
             return `${nombreCampo} debe ser una fecha futura`;
+        }
+        return null;
+    },
+    
+    esFechaDentroDeRango: (fecha, nombreCampo, mesesMaximos) => {
+        const error = Validaciones.esFechaFutura(fecha, nombreCampo);
+        if (error) return error;
+        
+        const fechaObj = new Date(fecha);
+        const ahora = new Date();
+        const fechaMaxima = new Date();
+        fechaMaxima.setMonth(ahora.getMonth() + mesesMaximos);
+        
+        if (fechaObj > fechaMaxima) {
+            return `${nombreCampo} no puede ser superior a ${mesesMaximos} meses desde hoy`;
         }
         return null;
     },

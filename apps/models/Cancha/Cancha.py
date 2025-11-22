@@ -1,11 +1,12 @@
 from models.Cancha.TipoCancha import TipoCancha
 from models.Cancha.Servicio import Servicio
+from models.Validaciones import Validaciones
 
 class Cancha:
     def __init__(self, nro_cancha : int, tipo_cancha : TipoCancha, costo_hora : float):
         self.nro_cancha = nro_cancha
         self.tipo_cancha = tipo_cancha
-        self.costo_hora = costo_hora
+        self.costo_hora = Validaciones.esNumeroPositivo(costo_hora, "Costo por hora")
         self.servicios = []
 
     def agregar_servicio(self, servicio : Servicio):

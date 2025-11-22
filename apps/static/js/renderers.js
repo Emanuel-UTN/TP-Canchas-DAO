@@ -15,7 +15,10 @@ function renderClientes(data, container) {
             <td>${cliente.nombre}</td>
             <td>${cliente.apellido}</td>
             <td>${cliente.telefono}</td>
-            <td><button class="btn btn-danger" onclick="eliminarCliente(${cliente.dni})">Eliminar</button></td>
+            <td>
+                <button class="btn btn-primary" onclick="editarCliente(${cliente.dni})">Editar</button>
+                <button class="btn btn-danger" onclick="eliminarCliente(${cliente.dni})">Eliminar</button>
+            </td>
         </tr>`;
     });
     html += '</tbody></table>';
@@ -50,7 +53,9 @@ function renderCanchas(data, container) {
             <td>${cancha.tipo}</td>
             <td>${serviciosText}</td>
             <td>$${cancha.costo_por_hora}</td>
-            <td><button class="btn btn-danger" onclick="eliminarCancha(${cancha.nro_cancha})">Eliminar</button></td>
+            <td>
+                <button class="btn btn-danger" onclick="eliminarCancha(${cancha.nro_cancha})">Eliminar</button>
+            </td>
         </tr>`;
     });
     html += '</tbody></table>';
@@ -66,15 +71,42 @@ function renderReservas(data, container) {
         container.innerHTML = '<div class="empty-state">No hay reservas registradas</div>';
         return;
     }
+
+    // Parsear una fecha recibida desde la API como cadena y construir un Date en hora local
+    function parseLocalDate(str) {
+        if (!str) return new Date(NaN);
+        // formatos esperados: 'YYYY-MM-DD HH:MM:SS' o 'YYYY-MM-DDTHH:MM:SS' o 'YYYY-MM-DDTHH:MM'
+        const m = String(str).match(/(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2})/);
+        if (m) {
+            const year = parseInt(m[1], 10);
+            const month = parseInt(m[2], 10) - 1;
+            const day = parseInt(m[3], 10);
+            const hour = parseInt(m[4], 10);
+            const minute = parseInt(m[5], 10);
+            return new Date(year, month, day, hour, minute);
+        }
+        // fallback al constructor estándar
+        return new Date(str);
+    }
+
+    function formatDate(d){
+        const pad = n => String(n).padStart(2, '0');
+        let fechaFormateada = 'Fecha inválida';
+        if (d instanceof Date && !isNaN(d.getTime())) {
+            fechaFormateada = `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        }
+        return fechaFormateada
+    }
+
     let html = '<table><thead><tr><th>Nro. Reserva</th><th>Fecha Inicio</th><th>Horas</th><th>Cancha</th><th>Cliente</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>';
     data.forEach(reserva => {
         html += `<tr>
             <td>${reserva.nro_reserva}</td>
-            <td>${reserva.fecha_hora_inicio}</td>
+            <td>${formatDate(parseLocalDate(reserva.fecha_hora_inicio))}</td>
             <td>${reserva.horas}</td>
-            <td>${reserva.nro_cancha}</td>
-            <td>${reserva.dni_cliente}</td>
-            <td>${reserva.id_estado}</td>
+            <td>${reserva.cancha.nro_cancha} - ${reserva.cancha.tipo}</td>
+            <td>${reserva.cliente.nombre} ${reserva.cliente.apellido}</td>
+            <td>${reserva.estado}</td>
             <td><button class="btn btn-danger" onclick="eliminarReserva(${reserva.nro_reserva})">Eliminar</button></td>
         </tr>`;
     });
@@ -136,10 +168,15 @@ function renderTiposCancha(data, container) {
         container.innerHTML = '<div class="empty-state">No hay tipos de cancha registrados</div>';
         return;
     }
-    let html = '<table><thead><tr><th>Tipo</th></tr></thead><tbody>';
+    let html = '<table><thead><tr><th>Tipo</th><th>Acciones</th></tr></thead><tbody>';
     data.forEach(tipo => {
+        const nombre = tipo.tipo;
         html += `<tr>
-            <td>${tipo.tipo}</td>
+            <td>${nombre}</td>
+            <td>
+                <button class="btn btn-primary" onclick="editarTipoCancha('${encodeURIComponent(nombre)}')">Editar</button>
+                <button class="btn btn-danger" onclick="eliminarTipoCancha('${encodeURIComponent(nombre)}')">Eliminar</button>
+            </td>
         </tr>`;
     });
     html += '</tbody></table>';
@@ -155,11 +192,16 @@ function renderServicios(data, container) {
         container.innerHTML = '<div class="empty-state">No hay servicios registrados</div>';
         return;
     }
-    let html = '<table><thead><tr><th>Servicio</th><th>Costo</th></tr></thead><tbody>';
+    let html = '<table><thead><tr><th>Servicio</th><th>Costo</th><th>Acciones</th></tr></thead><tbody>';
     data.forEach(servicio => {
+        const nombre = servicio.servicio;
         html += `<tr>
-            <td>${servicio.servicio}</td>
+            <td>${nombre}</td>
             <td>$${servicio.costo}</td>
+            <td>
+                <button class="btn btn-primary" onclick="editarServicio('${encodeURIComponent(nombre)}')">Editar</button>
+                <button class="btn btn-danger" onclick="eliminarServicio('${encodeURIComponent(nombre)}')">Eliminar</button>
+            </td>
         </tr>`;
     });
     html += '</tbody></table>';

@@ -1,12 +1,13 @@
 from models.Torneo.Equipo import Equipo
 from models.Cancha.Cancha import Cancha
+from models.Validaciones import Validaciones
 
 class Partido:
     def __init__(self, equipo_1: Equipo, equipo_2: Equipo, fecha_hora: str, cancha: Cancha):
         self.equipo_1 = equipo_1
         self.equipo_2 = equipo_2
         self.cancha = cancha
-        self.fecha_hora = fecha_hora
+        self.fecha_hora = Validaciones.esFechaValida(fecha_hora, "Fecha y hora")
     
     def finalizar_partido(self, goles_1: int, goles_2: int):
         self.goles_1, self.goles_2 = goles_1, goles_2

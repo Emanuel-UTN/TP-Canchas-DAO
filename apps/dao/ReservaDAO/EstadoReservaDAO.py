@@ -15,6 +15,17 @@ class EstadoReservaDAO:
             ''')
 
         conexion.commit()
+
+        cursor.execute('''
+            INSERT OR IGNORE INTO EstadoReserva (id_estado, estado)
+            VALUES
+                (1, 'Pendiente'),
+                (2, 'Confirmada'),
+                (3, 'Cancelada'),
+                (4, 'Completada')
+        ''')
+        
+        conexion.commit()
         cursor.close()
     
     @staticmethod
@@ -59,6 +70,17 @@ class EstadoReservaDAO:
         if fila:
             estado_reserva = EstadoReservaDAO.obtenerEstadoPorNombre(fila[1])
             return estado_reserva
+        return None
+    
+    @staticmethod
+    def obtener_id_estado_reserva_por_nombre(nombre_estado: str):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute('''SELECT id_estado FROM EstadoReserva WHERE estado = ?''', (nombre_estado,))
+        fila = cursor.fetchone()
+        cursor.close()
+        if fila:
+            return fila[0]
         return None
 
     @staticmethod

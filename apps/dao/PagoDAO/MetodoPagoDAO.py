@@ -10,10 +10,19 @@ class MetodoPagoDAO:
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS MetodoPago (
                 id_metodo_pago INTEGER PRIMARY KEY AUTOINCREMENT,
-                metodo TEXT
+                metodo VARCHAR(50) NOT NULL UNIQUE CHECK(length(trim(metodo)) >= 3)
                 )
             ''')
 
+        conexion.commit()
+
+        # Seed default payment methods
+        cursor.execute('''
+            INSERT OR IGNORE INTO MetodoPago (id_metodo_pago, metodo)
+            VALUES
+                (1, 'Efectivo'),
+                (2, 'Mercado Pago')
+        ''')
         conexion.commit()
         cursor.close()
     

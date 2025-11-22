@@ -10,9 +10,11 @@ class TipoCanchaDAO:
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS TipoCancha (
                 id_tipo INTEGER PRIMARY KEY AUTOINCREMENT,
-                tipo TEXT
+                tipo TEXT NOT NULL CHECK(length(trim(tipo)) >= 2 AND length(trim(tipo)) <= 50)
                 )
             ''')
+        # índice único para garantizar que no se repita el nombre
+        cursor.execute('''CREATE UNIQUE INDEX IF NOT EXISTS idx_tipo_cancha_unico ON TipoCancha(tipo);''')
 
         conexion.commit()
         cursor.close()
@@ -50,6 +52,15 @@ class TipoCanchaDAO:
             tipos_cancha.append(tipo_cancha)
         cursor.close()
         return tipos_cancha
+
+    @staticmethod
+    def obtener_tipo_cancha_por_nombre(nombre: str):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute('''SELECT tipo FROM TipoCancha WHERE tipo = ?''', (nombre,))
+        fila = cursor.fetchone()
+        cursor.close()
+        return TipoCancha(tipo=fila[0]) if fila else None
     
     @staticmethod
     def obtener_tipo_cancha_por_id(id_tipo: int):
@@ -75,13 +86,17 @@ class TipoCanchaDAO:
         return fila[0] if fila else None
 
     @staticmethod
-    def modificar_tipo_cancha(tipo_cancha: TipoCancha):
+    def modificar_tipo_cancha_por_nombre(nombre_actual: str, nuevo_nombre: str):
         conexion = ConexionDB().obtener_conexion()
         cursor = conexion.cursor()
-        cursor.execute('''
-            UPDATE TipoCancha
-            SET tipo = ?
-            WHERE id_tipo = ?
-        ''', (tipo_cancha.tipo, tipo_cancha.id_tipo))
+        cursor.execute('''UPDATE TipoCancha SET tipo = ? WHERE tipo = ?''', (nuevo_nombre, nombre_actual))
+        conexion.commit()
+        cursor.close()
+
+    @staticmethod
+    def eliminar_tipo_cancha_por_nombre(nombre: str):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute('''DELETE FROM TipoCancha WHERE tipo = ?''', (nombre,))
         conexion.commit()
         cursor.close()

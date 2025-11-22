@@ -11,8 +11,9 @@ class EquipoDAO:
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS Equipo (
                 id_equipo INTEGER PRIMARY KEY AUTOINCREMENT,
-                dni_delegado TEXT,
-                nombre VARCHAR(50)
+                dni_delegado INTEGER NOT NULL,
+                nombre VARCHAR(50) NOT NULL CHECK(length(trim(nombre)) >= 2),
+                FOREIGN KEY (dni_delegado) REFERENCES Cliente(dni)
                 )
             ''')
     
