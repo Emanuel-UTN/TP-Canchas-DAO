@@ -62,6 +62,11 @@ def page_pagos():
 def page_torneos():
     return render_template('torneos.html', active_tab='torneos')
 
+
+@app.route('/torneos/<int:id>')
+def page_torneo_detalle(id):
+    return render_template('torneo_detalle.html', active_tab='torneos', torneo_id=id)
+
 @app.route('/tipos-cancha')
 def page_tipos_cancha():
     return render_template('tipos-cancha.html', active_tab='tipos-cancha')

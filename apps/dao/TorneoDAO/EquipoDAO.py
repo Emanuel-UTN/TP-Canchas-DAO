@@ -29,7 +29,9 @@ class EquipoDAO:
             VALUES (?, ?)
         ''', (equipo.dni_delegado, equipo.nombre))
         conexion.commit()
+        last_id = cursor.lastrowid
         cursor.close()
+        return last_id
     
     @staticmethod
     def eliminar_equipo(id_equipo: int):

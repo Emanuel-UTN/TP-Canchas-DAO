@@ -139,7 +139,8 @@ class Validaciones:
             return 'Formato de fecha inválido'
         if fin <= inicio:
             return 'La fecha de fin debe ser posterior a la fecha de inicio'
-        return None
+        # devolver el objeto datetime válido (consistente con otras validaciones)
+        return fin
 
     @staticmethod
     def mostrarErrores(errores: List[str]) -> Optional[str]:

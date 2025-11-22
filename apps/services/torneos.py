@@ -1,20 +1,18 @@
 from flask import Blueprint, jsonify, request
 from dao.TorneoDAO.TorneoDAO import TorneoDAO
 from models.Torneo.Torneo import Torneo
+from dao.TorneoDAO.EquipoDAO import EquipoDAO
+from dao.TorneoDAO.TorneoEquipoDAO import TorneoEquipoDAO
+from dao.ClienteDAO.ClienteDAO import ClienteDAO
+
 
 bp_torneos = Blueprint('torneos', __name__, url_prefix='/api/torneos')
 
 @bp_torneos.route('/', methods=['GET'])
 def obtener_torneos():
     try:
-        torneos = TorneoDAO.obtener_torneos()
-        return jsonify([{
-            'id': t.id,
-            'fecha_inicio': t.fecha_inicio,
-            'fecha_fin': t.fecha_fin,
-            'costo_inscripcion': t.costo_inscripcion,
-            'premio': t.premio
-        } for t in torneos])
+        torneos = TorneoDAO.listar_torneos_con_cantidad_equipos()
+        return jsonify(torneos)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -66,3 +64,70 @@ def eliminar_torneo(id):
         return jsonify({'mensaje': 'Torneo eliminado exitosamente'})
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+
+
+@bp_torneos.route('/detalle/<int:id>', methods=['GET'])
+def obtener_detalle_torneo(id):
+    try:
+        detalle = TorneoDAO.obtener_detalle_torneo(id)
+        if detalle is None:
+            return jsonify({'error': 'Torneo no encontrado'}), 404
+        return jsonify(detalle)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@bp_torneos.route('/<int:id>/equipos', methods=['GET'])
+def listar_equipos_torneo(id):
+    try:
+        torneo = TorneoDAO.obtener_torneo_por_id(id)
+        if torneo is None:
+            return jsonify({'error': 'Torneo no encontrado'}), 404
+
+        # obtener tabla con id_equipo y puntos
+        tabla = TorneoEquipoDAO.obtener_tabla_por_torneo(id)
+        equipos = []
+        for row in tabla:
+            equipo = EquipoDAO.obtener_equipo_por_id(row['id_equipo'])
+            if equipo:
+                equipos.append({
+                    'id_equipo': row['id_equipo'],
+                    'nombre': equipo.nombre,
+                    'delegado': equipo.delegado.dni if equipo.delegado else None,
+                    'puntos': row['puntos']
+                })
+        return jsonify(equipos)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@bp_torneos.route('/<int:id>/equipos', methods=['POST'])
+def agregar_equipo_a_torneo(id):
+    try:
+        data = request.json
+        nombre = data.get('nombre')
+        dni_delegado = data.get('dni_delegado')
+        if not nombre or not dni_delegado:
+            return jsonify({'error': 'Faltan campos requeridos (nombre, dni_delegado)'}), 400
+
+        # validar torneo
+        torneo = TorneoDAO.obtener_torneo_por_id(id)
+        if torneo is None:
+            return jsonify({'error': 'Torneo no encontrado'}), 404
+
+        # validar delegado existente
+        delegado = ClienteDAO.obtener_cliente_por_dni(int(dni_delegado))
+        if delegado is None:
+            return jsonify({'error': 'Delegado (cliente) no encontrado'}), 400
+
+        # crear equipo
+        from models.Torneo.Equipo import Equipo as EquipoModel
+        equipo = EquipoModel(nombre=nombre, delegado=delegado)
+        nuevo_id = EquipoDAO.agregar_equipo(equipo)
+
+        # vincular al torneo con 0 puntos iniciales
+        TorneoEquipoDAO.agregar_torneo_equipo(id, nuevo_id, 0)
+
+        return jsonify({'mensaje': 'Equipo agregado al torneo', 'id_equipo': nuevo_id}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

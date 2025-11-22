@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2>Detalle del Torneo</h2>
+        <div id="torneo-meta" class="mb-3"></div>
+        <div id="torneo-root" data-torneo-id="{{ torneo_id }}" style="display:none"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h4>Tabla de posiciones</h4>
+        <div id="tabla-posiciones">Cargando...</div>
+        <hr>
+        <h5>Agregar equipo</h5>
+        <form id="form-agregar-equipo" class="mb-3" onsubmit="return false;">
+            <div class="mb-2">
+                <label class="form-label">Nombre del equipo</label>
+                <input id="equipo-nombre" class="form-control" required>
+            </div>
+            <div class="mb-2 position-relative">
+                <label class="form-label">Delegado (buscar por nombre)</label>
+                <input id="equipo-delegado-input" class="form-control" placeholder="Escribe nombre o apellido" autocomplete="off">
+                <datalist id="clientes-list-torneo"></datalist>
+                <input type="hidden" id="equipo-delegado-dni" required>
+                <div id="clientes-suggestions-torneo" class="list-group position-absolute w-100" style="z-index:2000; display:none; max-height:240px; overflow:auto;"></div>
+            </div>
+            <div>
+                <button id="btn-agregar-equipo" class="btn btn-success">Agregar equipo</button>
+            </div>
+            <div id="mensaje-equipo" class="mt-2"></div>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <h4>Próximos partidos</h4>
+        <div id="proximos-partidos">Cargando...</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/torneo_detalle.js') }}"></script>
+{% endblock %}

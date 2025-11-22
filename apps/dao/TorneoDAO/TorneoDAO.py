@@ -94,4 +94,106 @@ class TorneoDAO:
         ''', (torneo.fecha_inicio, torneo.fecha_fin, torneo.costo_inscripcion, torneo.premio, torneo.id))
         conexion.commit()
         cursor.close()
+
+    @staticmethod
+    def obtener_detalle_torneo(id_torneo: int):
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+
+        cursor.execute('SELECT id, fecha_inicio, fecha_fin, costo_inscripcion, premio FROM Torneo WHERE id = ?', (id_torneo,))
+        fila = cursor.fetchone()
+        if not fila:
+            cursor.close()
+            return None
+
+        torneo = {
+            'id': fila['id'],
+            'fecha_inicio': fila['fecha_inicio'],
+            'fecha_fin': fila['fecha_fin'],
+            'costo_inscripcion': fila['costo_inscripcion'],
+            'premio': fila['premio']
+        }
+
+        # Tabla de posiciones: obtener puntos y estadísticas desde TorneoEquipo y Partido
+        cursor.execute('''
+            SELECT te.id_equipo, e.nombre, te.puntos,
+                (SELECT COUNT(*) FROM Partido p WHERE p.id_torneo = te.id_torneo AND (p.id_equipo1 = te.id_equipo OR p.id_equipo2 = te.id_equipo)) AS partidos_jugados,
+                COALESCE((SELECT SUM(CASE WHEN p.id_equipo1 = te.id_equipo THEN p.goles_equipo1 WHEN p.id_equipo2 = te.id_equipo THEN p.goles_equipo2 ELSE 0 END) FROM Partido p WHERE p.id_torneo = te.id_torneo AND (p.id_equipo1 = te.id_equipo OR p.id_equipo2 = te.id_equipo)), 0) AS goles_a_favor,
+                COALESCE((SELECT SUM(CASE WHEN p.id_equipo1 = te.id_equipo THEN p.goles_equipo2 WHEN p.id_equipo2 = te.id_equipo THEN p.goles_equipo1 ELSE 0 END) FROM Partido p WHERE p.id_torneo = te.id_torneo AND (p.id_equipo1 = te.id_equipo OR p.id_equipo2 = te.id_equipo)), 0) AS goles_en_contra
+            FROM TorneoEquipo te
+            JOIN Equipo e ON te.id_equipo = e.id_equipo
+            WHERE te.id_torneo = ?
+            ORDER BY te.puntos DESC, goles_a_favor - goles_en_contra DESC
+        ''', (id_torneo,))
+
+        tabla = []
+        filas = cursor.fetchall()
+        posicion = 1
+        for f in filas:
+            tabla.append({
+                'posicion': posicion,
+                'id_equipo': f['id_equipo'],
+                'nombre': f['nombre'],
+                'puntos': f['puntos'],
+                'partidos_jugados': f['partidos_jugados'],
+                'goles_a_favor': f['goles_a_favor'],
+                'goles_en_contra': f['goles_en_contra']
+            })
+            posicion += 1
+
+        # Próximos partidos: listar con nombres de equipos y cancha
+        cursor.execute('''
+            SELECT p.id_partido, p.id_equipo1, e1.nombre AS equipo1_nombre, p.id_equipo2, e2.nombre AS equipo2_nombre,
+                   p.nro_cancha, c.tipo AS cancha_tipo, p.fecha_hora, p.goles_equipo1, p.goles_equipo2
+            FROM Partido p
+            JOIN Equipo e1 ON p.id_equipo1 = e1.id_equipo
+            JOIN Equipo e2 ON p.id_equipo2 = e2.id_equipo
+            LEFT JOIN Cancha c ON p.nro_cancha = c.nro_cancha
+            WHERE p.id_torneo = ?
+            ORDER BY p.fecha_hora ASC
+        ''', (id_torneo,))
+
+        partidos = []
+        for pf in cursor.fetchall():
+            partidos.append({
+                'id_partido': pf['id_partido'],
+                'equipo1_id': pf['id_equipo1'],
+                'equipo1_nombre': pf['equipo1_nombre'],
+                'equipo2_id': pf['id_equipo2'],
+                'equipo2_nombre': pf['equipo2_nombre'],
+                'nro_cancha': pf['nro_cancha'],
+                'cancha_tipo': pf['cancha_tipo'],
+                'fecha_hora': pf['fecha_hora'],
+                'goles_equipo1': pf['goles_equipo1'],
+                'goles_equipo2': pf['goles_equipo2']
+            })
+
+        torneo['tabla'] = tabla
+        torneo['partidos'] = partidos
+
+        cursor.close()
+        return torneo
+
+    @staticmethod
+    def listar_torneos_con_cantidad_equipos():
+        conexion = ConexionDB().obtener_conexion()
+        cursor = conexion.cursor()
+        cursor.execute('''
+            SELECT t.id, t.fecha_inicio, t.fecha_fin, t.costo_inscripcion, t.premio,
+                (SELECT COUNT(*) FROM TorneoEquipo te WHERE te.id_torneo = t.id) AS numero_equipos
+            FROM Torneo t
+        ''')
+        filas = cursor.fetchall()
+        torneos = []
+        for f in filas:
+            torneos.append({
+                'id': f['id'],
+                'fecha_inicio': f['fecha_inicio'],
+                'fecha_fin': f['fecha_fin'],
+                'costo_inscripcion': f['costo_inscripcion'],
+                'premio': f['premio'],
+                'numero_equipos': f['numero_equipos']
+            })
+        cursor.close()
+        return torneos
     

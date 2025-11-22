@@ -166,16 +166,20 @@ function renderTorneos(data, container) {
         container.innerHTML = '<div class="empty-state">No hay torneos registrados</div>';
         return;
     }
-    let html = '<table  ><thead><tr><th>ID</th><th>Fecha Inicio</th><th>Fecha Fin</th><th>Costo Inscripción</th><th>Premio</th><th>Acciones</th></tr></thead><tbody>';
+        let html = '<table  ><thead><tr><th>ID</th><th>Fecha Inicio</th><th>Fecha Fin</th><th>Costo Inscripción</th><th>Premio</th><th>Equipos</th><th>Acciones</th></tr></thead><tbody>';
     data.forEach(torneo => {
-        html += `<tr>
-            <td>${formatNumber(torneo.id)}</td>
-            <td>${torneo.fecha_inicio}</td>
-            <td>${torneo.fecha_fin}</td>
-            <td>$${formatNumber(torneo.costo_inscripcion)}</td>
-            <td>$${formatNumber(torneo.premio)}</td>
-            <td><button class="btn btn-danger" onclick="eliminarTorneo(${torneo.id})">Eliminar</button></td>
-        </tr>`;
+            html += `<tr>
+                <td>${formatNumber(torneo.id)}</td>
+                <td>${torneo.fecha_inicio}</td>
+                <td>${torneo.fecha_fin}</td>
+                <td>$${formatNumber(torneo.costo_inscripcion)}</td>
+                <td>$${formatNumber(torneo.premio)}</td>
+                <td>${torneo.numero_equipos ?? 0}</td>
+                <td>
+                    <a class="btn btn-primary me-2" href="/torneos/${torneo.id}">Ver más</a>
+                    <button class="btn btn-danger" onclick="eliminarTorneo(${torneo.id})">Eliminar</button>
+                </td>
+            </tr>`;
     });
     html += '</tbody></table>';
     container.innerHTML = html;
